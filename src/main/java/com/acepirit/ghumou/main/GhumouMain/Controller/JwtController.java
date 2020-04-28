@@ -59,16 +59,17 @@ public class JwtController {
 	//initila signup for users
 	@PostMapping("/signup")
 	public ResponseEntity<?> signupUser(@RequestBody AuthenticateRequest authenrequest) {
-		authenrequest.setPassword(passwordEncoder.encode(authenrequest.getPassword()));;
-		authenRepository.save(authenrequest);
-		
-		return globalResponse.globalResponse("Success",HttpStatus.CREATED.value());
+		AuthenticateRequest auth = authenService.findByUserName(authenrequest.getUsername());
+		if(auth==null) {
+			authenrequest.setPassword(passwordEncoder.encode(authenrequest.getPassword()));;
+			authenRepository.save(authenrequest);
+			
+			return globalResponse.globalResponse("Success",HttpStatus.CREATED.value());
+		}else {
+			return globalResponse.globalResponse("Username should be unique.Please select another username",HttpStatus.BAD_REQUEST.value());
+		}
 	}
-//	//for testing purposes
-//	@GetMapping("/hello")
-//	public ResponseEntity<?> getdata(){
-//		return globalResponse.globalResponse();
-//	}
+	
 	
 	
 }

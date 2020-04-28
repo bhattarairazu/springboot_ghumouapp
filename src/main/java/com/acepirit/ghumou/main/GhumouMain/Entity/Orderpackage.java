@@ -70,6 +70,7 @@ public class Orderpackage {
 	private Packagess packages;
 	//only for recevigind data
 	
+	
 	public Orderpackage() {}
 	public Orderpackage(int bookingAmount, int remainingAmount, boolean totalPaidStatus, Date orderDate, Date departureDate,
 			String orderFrom, int totalPeople, String orderNotes, String orderStatus, String orderMessage, User user,
@@ -87,6 +88,7 @@ public class Orderpackage {
 		this.user = user;
 		this.packages = packages;
 	}
+	
 
 	public int getId() {
 		return id;

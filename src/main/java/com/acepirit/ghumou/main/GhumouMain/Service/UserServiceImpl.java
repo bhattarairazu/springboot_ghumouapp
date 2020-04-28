@@ -42,12 +42,17 @@ public class UserServiceImpl implements UserService {
 	public boolean checkLogin(String username, String password) {
 		User user = userRepository.findByUserName(username);
 		if(user!=null) {
-			String password_db = user.getPassword();
-			if(passwordEncoder.matches(password, password_db)) {
-				return true;
+			if(user.isEnabled()) {
+				String password_db = user.getPassword();
+				if(passwordEncoder.matches(password, password_db)) {
+					return true;
+				}else {
+					return false;
+				}
 			}else {
-				return false;
+				throw new RuntimeException("Please Verify Your email before Login");
 			}
+			
 		}else {
 			throw new UsernameNotFoundException("Incorerct username or password");
 		}

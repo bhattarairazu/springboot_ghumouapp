@@ -5,29 +5,45 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileUploadService {
-	//directory path for storing files
-	public static String uploadDirectoryfilesystem = System.getProperty("user.dir")+"/ghumoufiles";
-
-	public String storeFile(MultipartFile file) {
-		//getting filepath
-		String uploadDirectorynew = "/ghumoufiles";
-		//String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-		
-		Path fileNamePath = Paths.get(uploadDirectoryfilesystem,file.getOriginalFilename());
-		Path datastore = Paths.get(uploadDirectorynew,file.getOriginalFilename());
+	private static String UPLOAD_ROOT = "/home/acepirit/ghumoufiles/";
+	private final ResourceLoader resourceLoader;
 	
-		//wiritn file to the respective path
-		try {
-			Files.write(fileNamePath,file.getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@Autowired
+	public FileUploadService(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
 		
-		return datastore.toString();
 	}
+	
+	public Path findImage(String filename) {
+		Path fileNamePath = Paths.get(UPLOAD_ROOT,filename);
+		return fileNamePath;
+	}
+	
+	public String storeFile(MultipartFile file) throws IOException{
+		//if(!file.isEmpty()) {
+			Files.copy(file.getInputStream(),Paths.get(UPLOAD_ROOT,file.getOriginalFilename()));
+			System.out.println("Insid eservice"+UPLOAD_ROOT+file.getOriginalFilename());
+			return "/ghumoufiles/"+file.getOriginalFilename();
+		//}
+		//return null;
+	}
+//	public boolean deleteFile(String filename) {
+//		try {
+//			Files.deleteIfExists(Paths.get(UPLOAD_ROOT,filename));
+//			return true;
+//		} catch (IOException e) {
+//			
+//			e.printStackTrace();
+//		}
+//		
+//	}
+	
 }

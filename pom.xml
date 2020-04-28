@@ -12,6 +12,7 @@
 	<artifactId>GhumouMain</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GhumouMain</name>
+	<packaging>war</packaging>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -30,6 +31,17 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+				    <groupId>org.springframework.boot</groupId>
+				    <artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			
+				<!-- <exclusion>
+				    <groupId>org.apache.tomcat.embed</groupId>
+				    <artifactId>tomcat-embed-el</artifactId>
+				</exclusion>  -->
+		</exclusions>
 		</dependency>
 
 		<dependency>
@@ -60,7 +72,17 @@
 	    		<artifactId>springfox-swagger-ui</artifactId>
 	    		<version>2.6.1</version>
 			</dependency>
-		
+			<!-- For sending email -->
+			<dependency>
+		        <groupId>org.springframework.boot</groupId>
+		        <artifactId>spring-boot-starter-mail</artifactId>
+		    </dependency>
+		    
+		    <dependency>
+	    	<groupId>org.springframework.boot</groupId>
+	    	<artifactId>spring-boot-starter-tomcat</artifactId>
+	    	<scope>provided</scope>
+	    </dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

@@ -1,14 +1,17 @@
 package com.acepirit.ghumou.main.GhumouMain.Controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,11 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.AuthenticateRequest;
+import com.acepirit.ghumou.main.GhumouMain.Entity.ConfirmationToken;
 import com.acepirit.ghumou.main.GhumouMain.Entity.PasswordChange;
 import com.acepirit.ghumou.main.GhumouMain.Entity.User;
-import com.acepirit.ghumou.main.GhumouMain.Entity.UserEdit;
+import com.acepirit.ghumou.main.GhumouMain.Repository.ConfirmationTokenReposiroty;
+import com.acepirit.ghumou.main.GhumouMain.Service.EmailService;
 import com.acepirit.ghumou.main.GhumouMain.Service.FileUploadService;
 import com.acepirit.ghumou.main.GhumouMain.Service.GlobalResponseService;
 import com.acepirit.ghumou.main.GhumouMain.Service.UserService;
@@ -32,7 +38,7 @@ public class UserRegisterLogin {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -43,8 +49,17 @@ public class UserRegisterLogin {
 	@Autowired
 	private GlobalResponseService gresponse;
 	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private ConfirmationTokenReposiroty confirmationTokenRepository;
+	
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@RequestPart("profileImage") MultipartFile profileImage,@RequestPart("user") User user){
+		final String baseUrl = 
+				ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+		//System.out.println("Bawse url"+baseUrl);
 		String email = user.getEmail();
 		String username = user.getUserName();
 		
@@ -55,15 +70,58 @@ public class UserRegisterLogin {
 			throw new RuntimeException("User with username "+username+" already Exist.Please insert new username");
 				
 		}
-		String profileImagePath = fileUploadService.storeFile(profileImage);
+		
+		String profileImagePath=null;
+		if(profileImage!=null) {
+			try {
+				profileImagePath = fileUploadService.storeFile(profileImage);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Get profile image path"+profileImagePath);
 		user.getUser_profile().setProfileImage(profileImagePath);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		userService.save(user);
+		
+		//saving user and sending confirmation token
+		ConfirmationToken confirmationToken = new ConfirmationToken(user);
+		confirmationTokenRepository.save(confirmationToken);
+		//sendign mail
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setTo(user.getEmail());
+		mailMessage.setSubject("Complete Registration");
+		mailMessage.setFrom("razubhattarai88@gmail.com");
+		mailMessage.setText(" To Confirm Your Account, Please click here."
+		+ baseUrl+"/api/v2/account/confirm-account?token="+confirmationToken.getConfirmationToken());
+		
+		//email sent
+		emailService.sendEmail(mailMessage);
+		
+		
+		
 		
 		return gresponse.responseClient(user);
 		
 		
 	}
+	//for verifying account
+	@GetMapping(value="/confirm-account",params="token")
+	public ResponseEntity<?> confirmAccount(@RequestParam("token") String token){
+		ConfirmationToken tokens = confirmationTokenRepository.findByConfirmationToken(token);
+		if(tokens!=null) {
+			User user = userService.findByEmail(tokens.getUser().getEmail());
+			user.setEnabled(true);
+			userService.save(user);
+			return gresponse.globalResponse("Success", HttpStatus.OK.value());
+		}else {
+			return gresponse.globalResponse("Failed", HttpStatus.BAD_REQUEST.value());
+			
+		}
+	}
+	
+	
 	//for login
 	@PostMapping("/login")
 	public ResponseEntity<?> userLogin(@RequestBody AuthenticateRequest userlogin){
@@ -82,6 +140,15 @@ public class UserRegisterLogin {
 		List<User> allUsers = userService.findAll();
 		return gresponse.listResponse(allUsers);
 	}
+	//for lisitng all users
+//	@GetMapping("/usersList")
+//	public List<User> usersList(){
+//		List<User> allUsers = userService.findAll();
+//		return allUsers;
+//	}
+
+	
+	
 	//finding user by username
 	@RequestMapping(value="/users",params="username")
 	public ResponseEntity<?> userByUsername(@RequestParam("username") String username){
@@ -119,7 +186,17 @@ public class UserRegisterLogin {
 		public ResponseEntity<?> changePicture(@RequestParam("profileImage") MultipartFile profileImage,@RequestParam("userid") int userid){
 			User user = userService.findById(userid);
 			if(user!=null) {
-				String profileImagePath = fileUploadService.storeFile(profileImage);
+				String profileImagePath=null;
+				if(profileImage!=null) {
+					try {
+						profileImagePath = fileUploadService.storeFile(profileImage);
+					} catch (IOException e) {
+					
+						e.printStackTrace();
+					}
+				}else {
+					throw new RuntimeException("Profile Image Shouldnot be Empty");
+				}
 				user.getUser_profile().setProfileImage(profileImagePath);
 				userService.save(user);
 				return gresponse.profilePicSuccess(profileImagePath);
@@ -156,6 +233,29 @@ public class UserRegisterLogin {
 			
 		}
 		
+		//for forgot password
+		@GetMapping(value="/resetpassword",params="email")
+		public ResponseEntity<?> resetPassword(@RequestParam("email") String email){
+			User user = userService.findByEmail(email);
+			if(user!=null) {
+				String password = user.getPassword();
+				String randomPasswordGenerater = UUID.randomUUID().toString();
+				user.setPassword(passwordEncoder.encode(randomPasswordGenerater));
+				userService.save(user);
+				
+				//sending password to registered email
+				SimpleMailMessage mailMessage = new SimpleMailMessage();
+				mailMessage.setTo(user.getEmail());
+				mailMessage.setFrom("razubhattarai88@gmail.com");
+				mailMessage.setSubject("Password Reset");
+				mailMessage.setText("Your password reset is successfull.Please login with new password "+randomPasswordGenerater);
+				emailService.sendEmail(mailMessage);
+				return gresponse.globalResponse("Success", HttpStatus.OK.value());
+				
+			}else {
+				return gresponse.globalResponse("Failed",HttpStatus.BAD_REQUEST.value());
+			}
+		}
 		
 
 }

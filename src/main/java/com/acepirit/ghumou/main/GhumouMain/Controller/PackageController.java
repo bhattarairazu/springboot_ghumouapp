@@ -1,17 +1,16 @@
 package com.acepirit.ghumou.main.GhumouMain.Controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.PathResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.Images;
 import com.acepirit.ghumou.main.GhumouMain.Entity.Packagess;
@@ -36,6 +36,7 @@ public class PackageController {
 	@Autowired
 	private FileUploadService fileUploadService;
 	
+
 	@Autowired
 	private PackageService packageService;
 	
@@ -44,23 +45,43 @@ public class PackageController {
 	
 	//inserting package to the database
 	@PostMapping("/packages")
-	public String postPackage(@RequestPart("thumnail") MultipartFile thumnail,
+	public ResponseEntity<?> postPackage(@RequestPart("thumnail") MultipartFile thumnail,
 				@RequestPart("images") MultipartFile[] images,
 				@RequestPart("packages") Packagess packages) {
-		String thumnailPath = fileUploadService.storeFile(thumnail);
+		String thumnailPath=null;
+		if(thumnail!=null) {
+			try {
+				thumnailPath = fileUploadService.storeFile(thumnail);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else {
+			throw new RuntimeException("Thumnail Image should not be empty");
+		}
+		//checking list of images for null value
 		List<Images> imagesPath = new ArrayList<>();
-		for(MultipartFile file:images) {
-			Images image = new Images();
-			image.setImage(fileUploadService.storeFile(file));
-			//imagesPath.add(fileUploadService.storeFile(file));
-			imagesPath.add(image);
+		if(images!=null) {
+			
+			for(MultipartFile file:images) {
+				Images image = new Images();
+				try {
+					image.setImage(fileUploadService.storeFile(file));
+				} catch (IOException e) {
+				
+					e.printStackTrace();
+				}
+				//imagesPath.add(fileUploadService.storeFile(file));
+				imagesPath.add(image);
+			}
+		}else {
+			throw new RuntimeException("Package Should Contain Atleast One Image ");
 		}
 		//settingn respecting images to packages 
 		packages.setCreatedAt(new Date(System.currentTimeMillis()));
 		packages.setImages(imagesPath);
 		packages.setThumnail(thumnailPath);
 		packageService.save(packages);
-		return "Successfull";	
+		return globalResponse.responseClient(packages);	
 	}
 	//getting all packages list
 	@GetMapping("/packages")
@@ -71,16 +92,16 @@ public class PackageController {
 	
 	
 	//For Download files 
-		@GetMapping("/ghumoufiles/{fileName}")
+		@GetMapping("/ghumoufiles/{fileName:.*}")
 		public ResponseEntity<PathResource> downloadFile(@PathVariable String fileName){
 			
-			String uploadDirectoryfilesystem = System.getProperty("user.dir")+"/ghumoufiles";
+			String uploadDirectoryfilesystem ="/home/acepirit/ghumoufiles/";
 			Path fileNamePath = Paths.get(uploadDirectoryfilesystem,fileName);
-			
-			
+			System.out.println("filename "+fileName);
 			return ResponseEntity.ok()
-				//	.contentType(MediaType.parseMediaType("image/jpeg"))
+					//.contentType(MediaType.parseMediaType("image/jpeg"))
 					.header(HttpHeaders.CONTENT_DISPOSITION,"attachment:filename=\""+fileName+"\"")
+					//.body(new PathResource(fileNamePath));
 					.body(new PathResource(fileNamePath));
 		}
 		

@@ -30,10 +30,9 @@ public class User {
 	@Column(name="email")
 	private String email;
 	
+	@Column(name="is_enabled")
+	private boolean isEnabled = false;
 	
-	
-	
-
 	@Column(name="password")
 	private String password;
 
@@ -43,10 +42,6 @@ public class User {
 	
 	public User() {}
 	
-
-	
-
-	
 	
 	public User(String firstName, String lastName, String userName, String email, String password,
 			Profile user_profile) {
@@ -54,6 +49,22 @@ public class User {
 		this.lastName = lastName;
 		this.userName = userName;
 		this.email = email;
+		this.password = password;
+		this.user_profile = user_profile;
+	}
+
+
+
+
+
+
+	public User(String firstName, String lastName, String userName, String email, boolean isEnabled, String password,
+			Profile user_profile) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.userName = userName;
+		this.email = email;
+		this.isEnabled = isEnabled;
 		this.password = password;
 		this.user_profile = user_profile;
 	}
@@ -122,6 +133,16 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
 	}
 	
 	
