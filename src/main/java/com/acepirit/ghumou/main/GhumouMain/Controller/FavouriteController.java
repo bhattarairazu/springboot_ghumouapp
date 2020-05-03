@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +40,7 @@ public class FavouriteController {
 	private GlobalResponseService globalresponse;
 	
 	@PostMapping("/favourite")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<?> postFavouriet(@RequestBody GettingFavouriteData favourite){
 		System.out.println("favoureit is "+favourite.getPackageId());
 		
@@ -52,6 +54,7 @@ public class FavouriteController {
 	}
 	
 	@GetMapping(value="/favourite",params="user_id")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<?> allFavorutei(@RequestParam("user_id") int user_id){
 		User user = userService.findById(user_id);
 		System.out.println("user"+user);
@@ -72,6 +75,7 @@ public class FavouriteController {
 //	}
 	
 	@DeleteMapping(value="/favourite",params="favourite_id")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<?> removeFromFavoureit(@RequestParam("favourite_id") int favourite_id){
 		
 		favouriteService.deleteById(favourite_id);

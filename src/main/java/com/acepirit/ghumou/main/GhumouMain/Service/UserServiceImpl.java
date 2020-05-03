@@ -1,9 +1,21 @@
 package com.acepirit.ghumou.main.GhumouMain.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.acepirit.ghumou.main.GhumouMain.Entity.AuthenticateRequest;
+import com.acepirit.ghumou.main.GhumouMain.Entity.Role;
+import com.acepirit.ghumou.main.GhumouMain.Repository.ConfirmationTokenReposiroty;
+import com.acepirit.ghumou.main.GhumouMain.Repository.RoleRepository;
+import com.acepirit.ghumou.main.GhumouMain.Utils.Jwtutil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +31,29 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
+	//private NullAwareBeanUtilsBean beaUtils;
+	//for uploading file
+	@Autowired
+	private FileUploadService fileUploadService;
+
+	@Autowired
+	private GlobalResponseService gresponse;
+
+	@Autowired
+	private EmailService emailService;
+
+	@Autowired
+	private ConfirmationTokenReposiroty confirmationTokenRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
+	@Autowired
+	private Jwtutil jwtFilter;
+
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
 	@Override
 	public User findByUserName(String username) {
@@ -138,8 +173,60 @@ public class UserServiceImpl implements UserService {
 		return allUser;
 	}
 
-	
+	@Override
+	public void patch(User user) {
+		Optional<User> result = userRepository.findById(user.getId());
+		User users = null;
+		if(result.isPresent()){
+			users = result.get();
 
-	
+		}
+	}
 
-}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepository.findByUserName(username);
+
+		if (user == null) {
+			throw new UsernameNotFoundException("User with username "+username+" Not found");
+		}
+		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
+				mapRolesToAuthorities(user));
+	}
+
+	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(User user) {
+		List<GrantedAuthority> authorities = user.getRoles().stream().
+				map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+		return authorities;
+	}
+
+
+	//login to the respected user from both restapi and dashboard
+	@Override
+	public boolean loginUser(AuthenticateRequest userlogin,String method) throws Exception {
+		boolean isEnabled = findByUserName(userlogin.getUsername()).isEnabled();
+		if (!isEnabled) {
+			if(method.matches("API")) {
+				throw new RuntimeException("Please verify your email before login");
+			}else{
+				return false;
+			}
+		}
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userlogin.getUsername(), userlogin.getPassword()));
+
+		} catch (BadCredentialsException ex) {
+			if(method.matches("API")) {
+				throw new Exception("Incorrect username and password");
+			}else{
+				return false;
+			}
+		}
+		return true;
+//		final UserDetails userDetails = loadUserByUsername(userlogin.getUsername());
+//		String jwt = jwtFilter.generateToken(userDetails);
+//		return gresponse.loginSuccessResponse(findByUserName(userlogin.getUsername()).getId(), jwt);
+
+		}
+	}

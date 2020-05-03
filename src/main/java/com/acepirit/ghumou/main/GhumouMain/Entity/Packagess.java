@@ -3,15 +3,7 @@ package com.acepirit.ghumou.main.GhumouMain.Entity;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="packages")
@@ -61,40 +53,20 @@ public class Packagess {
 	@JoinColumn(name="package_id",referencedColumnName = "package_id")
 	private List<Images> images;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="package_id",referencedColumnName = "package_id")
-	private List<Inclusions> inclusions;
+	private Inclusions inclusions;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="package_id",referencedColumnName = "package_id")
-	private List<Exclusions> exclusions;
+	private Exclusions exclusions;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="package_id",referencedColumnName = "package_id")
-	private List<Itenarys> itenarys;
+	private Itenarys itenarys;
 
 	public Packagess() {}
-	public Packagess(Date createdAt, String packageTitle, String packageDescription, int offers, int regularPrice,
-			int salePrice, String duration, String packageSellar, String thumnail, String packageType, int rating,
-			int views, List<Images> images, List<Inclusions> inclusions, List<Exclusions> exclusions,
-			List<Itenarys> itenarys) {
-		this.createdAt = createdAt;
-		this.packageTitle = packageTitle;
-		this.packageDescription = packageDescription;
-		this.offers = offers;
-		this.regularPrice = regularPrice;
-		this.salePrice = salePrice;
-		this.duration = duration;
-		this.packageSellar = packageSellar;
-		this.thumnail = thumnail;
-		this.packageType = packageType;
-		this.rating = rating;
-		this.views = views;
-		this.images = images;
-		this.inclusions = inclusions;
-		this.exclusions = exclusions;
-		this.itenarys = itenarys;
-	}
+
 
 	public int getId() {
 		return id;
@@ -208,30 +180,27 @@ public class Packagess {
 		this.images = images;
 	}
 
-	public List<Inclusions> getInclusions() {
+	public Inclusions getInclusions() {
 		return inclusions;
 	}
 
-	public void setInclusions(List<Inclusions> inclusions) {
+	public void setInclusions(Inclusions inclusions) {
 		this.inclusions = inclusions;
 	}
 
-	public List<Exclusions> getExclusions() {
+	public Exclusions getExclusions() {
 		return exclusions;
 	}
 
-	public void setExclusions(List<Exclusions> exclusions) {
+	public void setExclusions(Exclusions exclusions) {
 		this.exclusions = exclusions;
 	}
 
-	public List<Itenarys> getItenarys() {
+	public Itenarys getItenarys() {
 		return itenarys;
 	}
 
-	public void setItenarys(List<Itenarys> itenarys) {
+	public void setItenarys(Itenarys itenarys) {
 		this.itenarys = itenarys;
 	}
-	
-	
-
 }

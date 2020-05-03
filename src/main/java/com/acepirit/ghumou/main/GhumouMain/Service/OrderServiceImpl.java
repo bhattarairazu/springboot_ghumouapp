@@ -12,6 +12,8 @@ import com.acepirit.ghumou.main.GhumouMain.Entity.User;
 import com.acepirit.ghumou.main.GhumouMain.Repository.OrderRepository;
 import com.acepirit.ghumou.main.GhumouMain.Repository.UserRepository;
 
+import javax.swing.text.html.Option;
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -51,6 +53,10 @@ public class OrderServiceImpl implements OrderService {
 		orderpackage.setOrderStatus(order.getOrderStatus());
 		orderpackage.setUser(userService.findById(order.getUserId()));
 		orderpackage.setPackages(packageService.findById(order.getPackageId()));
+		orderpackage.setName(order.getName());
+		orderpackage.setAddress(order.getAddress());
+		orderpackage.setEmail(order.getEmail());
+		orderpackage.setPhoneNo(order.getPhoneNo());
 		orderRepository.save(orderpackage);
 		
 	}
@@ -72,12 +78,43 @@ public class OrderServiceImpl implements OrderService {
 			orderpackage.setOrderStatus(order.getOrderStatus());
 			orderpackage.setUser(userService.findById(order.getUserId()));
 			orderpackage.setPackages(packageService.findById(order.getPackageId()));
+			orderpackage.setName(order.getName());
+			orderpackage.setAddress(order.getAddress());
+			orderpackage.setEmail(order.getEmail());
+			orderpackage.setPhoneNo(order.getPhoneNo());
 			orderRepository.save(orderpackage);
 			
 		}else {
 			throw new RuntimeException("Order with id "+order.getId()+" Not found");
 		}
 	}
-	
+
+	@Override
+	public Orderpackage findById(int id) {
+		Optional<Orderpackage> result = orderRepository.findById(id);
+		Orderpackage orderpackage = null;
+		if(result.isPresent())
+		{
+			orderpackage = result.get();
+
+			return orderpackage;
+
+		}else{
+			throw new RuntimeException("Order with id "+id+" Not found");
+		}
+	}
+
+	@Override
+	public void saveDirect(Orderpackage orderpackage) {
+		orderRepository.save(orderpackage);
+
+	}
+
+	@Override
+	public List<Orderpackage> findAll() {
+		
+		return orderRepository.findAll();
+	}
+
 
 }

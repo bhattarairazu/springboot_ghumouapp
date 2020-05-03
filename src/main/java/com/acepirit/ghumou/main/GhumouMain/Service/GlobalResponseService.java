@@ -42,12 +42,13 @@ public class GlobalResponseService {
 		return ResponseEntity.ok(gr);
 	}
 	
-	public ResponseEntity<LoginResponse> loginSuccessResponse(int id){
+	public ResponseEntity<LoginResponse> loginSuccessResponse(int id,String jwt){
 		LoginResponse responseLogin = new LoginResponse();
 		responseLogin.setMsg("Success");
 		responseLogin.setStatusCode(HttpStatus.OK.value());
 		responseLogin.setTimeStamp(System.currentTimeMillis());
 		responseLogin.setUserid(id);
+		responseLogin.setJwt(jwt);
 		
 		return ResponseEntity.ok(responseLogin);
 	}

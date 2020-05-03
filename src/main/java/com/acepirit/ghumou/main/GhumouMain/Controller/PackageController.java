@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.PathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +46,7 @@ public class PackageController {
 	
 	//inserting package to the database
 	@PostMapping("/packages")
+	@PreAuthorize("hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> postPackage(@RequestPart("thumnail") MultipartFile thumnail,
 				@RequestPart("images") MultipartFile[] images,
 				@RequestPart("packages") Packagess packages) {
@@ -85,6 +87,7 @@ public class PackageController {
 	}
 	//getting all packages list
 	@GetMapping("/packages")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> allPakcage(){
 		List<Packagess> allpakcage = packageService.findAll();
 		return globalResponse.listPackageResponse(allpakcage); 
@@ -107,6 +110,7 @@ public class PackageController {
 		
 	//getting package by id
 		@GetMapping(value="/packages",params="id")
+		@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 		public ResponseEntity<?> getSinglePackage(@RequestParam("id") int id){
 			Packagess packages = packageService.findById(id);
 			if(packages!=null) {
@@ -118,12 +122,14 @@ public class PackageController {
 
 		//getting package by package type
 		@GetMapping(value="/packages",params="packagetype")
+		@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 		public ResponseEntity<?> listPackageByType(@RequestParam("packagetype") String packagetype){
 			List<Packagess> allPackageList = packageService.findByPackageType(packagetype);
 			return globalResponse.listPackageResponse(allPackageList);
 		}
 		//getting package by Sellar 
 		@GetMapping(value="/packages",params="packagesellar")
+		@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 		public ResponseEntity<?> listPackageBySellar(@RequestParam("packagesellar") String packagesellar){
 			List<Packagess> allPackageList = packageService.findByPackageSellar(packagesellar);
 			return globalResponse.listPackageResponse(allPackageList);
@@ -132,18 +138,21 @@ public class PackageController {
 		
 		//search package by keyword
 		@GetMapping(value="/packages",params="search")
+		@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 		public ResponseEntity<?> listPackageByKeyword(@RequestParam("search") String search){
 			List<Packagess> allPackageList = packageService.findPackagesByKeyword(search);
 			return globalResponse.listPackageResponse(allPackageList);
 		}
 		//filtering according to rating
 		@GetMapping(value="/packages",params="rating")
+		@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 		public ResponseEntity<?> listPackageByrating(@RequestParam("rating") int rating){
 			List<Packagess> allPackageList = packageService.findByRating(rating);
 			return globalResponse.listPackageResponse(allPackageList);
 		}
 	
 		@GetMapping(value="/packages",params= {"ordering","ordertype"})
+		@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 		public ResponseEntity<?> listPackageByViews(@RequestParam("ordering") String ordering,@RequestParam("ordertype") String ordertype){
 			List<Packagess> allPackages = null;
 			if(ordering.matches("rating") && ordertype.matches("DESC")) {

@@ -25,7 +25,7 @@ public class AuthenticateRequestImpl implements AuthenticateService {
 
 	@Override
 	public AuthenticateRequest findByUserName(String username) {
-		
+
 		return authenRepository.findByUserName(username);
 	}
 

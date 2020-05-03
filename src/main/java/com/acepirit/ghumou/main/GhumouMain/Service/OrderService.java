@@ -15,7 +15,12 @@ public interface OrderService {
 	public  List<Orderpackage> findAllByUser(User user);
 	
 	public void update(OrderRequest order);
+
+	Orderpackage findById(int id);
+
+	void saveDirect(Orderpackage orderpackage);
 	
+	List<Orderpackage> findAll();
 	
 	
 

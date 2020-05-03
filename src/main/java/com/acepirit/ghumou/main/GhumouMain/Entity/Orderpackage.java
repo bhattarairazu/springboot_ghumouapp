@@ -52,14 +52,6 @@ public class Orderpackage {
 	@Column(name="order_message")
 	private String orderMessage;
 	
-//	//@JsonIgnore
-//	@Column(insertable = false,updatable = false)
-//	private int userid;
-////	
-//	//@JsonIgnore
-//	@Column(insertable = false,updatable = false)
-//	private int packageid;
-//	
 	@OneToOne
 	@JoinColumn(name="user_id",referencedColumnName = "id")
 	private User user;
@@ -70,6 +62,17 @@ public class Orderpackage {
 	private Packagess packages;
 	//only for recevigind data
 	
+	@Column(name="name")
+	private String name;
+	
+	@Column(name="email")
+	private String email;
+	
+	@Column(name="phone_no")
+	private String phoneNo;
+	
+	@Column(name="address")
+	private String address;
 	
 	public Orderpackage() {}
 	public Orderpackage(int bookingAmount, int remainingAmount, boolean totalPaidStatus, Date orderDate, Date departureDate,
@@ -90,6 +93,28 @@ public class Orderpackage {
 	}
 	
 
+	public Orderpackage(int bookingAmount, int remainingAmount, boolean totalPaidStatus, Date orderDate,
+			Date departureDate, String orderFrom, int totalPeople, String orderNotes, String orderStatus,
+			String orderMessage, User user, Packagess packages, String name, String email, String phoneNo,
+			String address) {
+		super();
+		this.bookingAmount = bookingAmount;
+		this.remainingAmount = remainingAmount;
+		this.totalPaidStatus = totalPaidStatus;
+		this.orderDate = orderDate;
+		this.departureDate = departureDate;
+		this.orderFrom = orderFrom;
+		this.totalPeople = totalPeople;
+		this.orderNotes = orderNotes;
+		this.orderStatus = orderStatus;
+		this.orderMessage = orderMessage;
+		this.user = user;
+		this.packages = packages;
+		this.name = name;
+		this.email = email;
+		this.phoneNo = phoneNo;
+		this.address = address;
+	}
 	public int getId() {
 		return id;
 	}
@@ -193,18 +218,30 @@ public class Orderpackage {
 	public void setPackages(Packagess packages) {
 		this.packages = packages;
 	}
-//	public int getUserid() {
-//		return userid;
-//	}
-//	public void setUserid(int userid) {
-//		this.userid = userid;
-//	}
-//	public int getPackageid() {
-//		return packageid;
-//	}
-//	public void setPackageid(int packageid) {
-//		this.packageid = packageid;
-//	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
 	
 	

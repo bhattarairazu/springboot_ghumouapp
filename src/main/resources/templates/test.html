@@ -1,0 +1,35 @@
+<!DOCTYPE>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+
+  <meta http-equiv="refresh" content="10">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <title>Ghumou.com | Dashboard v.1</title>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <!-- IonIcons -->
+  <!-- Theme style -->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/adminlte.css}" media="all">
+</head>
+<body>
+<p id="pp">Loading ...</p>
+</body>
+  <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script type="text/javascript">
+	$("#pp").click(function(){
+		alert("button");
+	});
+</script>
+<!-- Bootstrap -->
+</html>

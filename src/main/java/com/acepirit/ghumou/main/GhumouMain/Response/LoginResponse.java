@@ -5,6 +5,7 @@ public class LoginResponse {
 	private int statusCode;
 	private long timeStamp;
 	private int userid;
+	private String jwt;
 	
 	public LoginResponse() {}
 	
@@ -32,6 +33,12 @@ public class LoginResponse {
 	public void setUserid(int userid) {
 		this.userid = userid;
 	}
-	
-	
+
+	public String getJwt() {
+		return jwt;
+	}
+
+	public void setJwt(String jwt) {
+		this.jwt = jwt;
+	}
 }

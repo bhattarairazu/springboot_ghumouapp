@@ -1,18 +1,15 @@
 package com.acepirit.ghumou.main.GhumouMain.Controller;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.bind.annotation.*;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.OrderRequest;
 import com.acepirit.ghumou.main.GhumouMain.Entity.Orderpackage;
@@ -39,6 +36,7 @@ public class OrderController {
 	
 	//posting orders
 	@PostMapping("/orders")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<?> postOrder(@RequestBody OrderRequest orders){
 		
 		orderService.save(orders);
@@ -46,11 +44,27 @@ public class OrderController {
 		return globaResponse.globalResponse("Success", HttpStatus.CREATED.value());
 					
 	}
-	
+	//patch request for OrderPackage data
+	@PatchMapping("/updateorder/{id}")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLAR')")
+	public ResponseEntity<?> patchOrder(@RequestBody Map<String,Object> update,@PathVariable int id){
+
+		//getting order by id
+		Orderpackage orderpackage = orderService.findById(id);
+		update.forEach((k,v)->{
+			Field field = ReflectionUtils.findField(Orderpackage.class,k);
+			field.setAccessible(true);
+			ReflectionUtils.setField(field,orderpackage,v);
+		});
+		orderService.saveDirect(orderpackage);
+		return globaResponse.globalResponse("Successfully Updated Order",HttpStatus.OK.value());
+	}
+
 
 //	
 	//edititng orders
 	@PutMapping("/orders")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLAR')")
 	public ResponseEntity<?> putOrder(@RequestBody OrderRequest orders){
 		
 		orderService.update(orders);;
@@ -61,6 +75,7 @@ public class OrderController {
 	
 	
 	@GetMapping(value="/orders",params="user_id")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLAR')")
 	public ResponseEntity<?> getOrders(@RequestParam("user_id") int user_id){
 		User user = userService.findById(user_id);
 		
@@ -71,10 +86,11 @@ public class OrderController {
 	}
 	
 	@DeleteMapping(value="/orders",params="order_id")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLAR')")
 	public ResponseEntity<?> deleteOrder(@RequestParam("order_id") int order_id){
 		orderService.deleteById(order_id);
 		return globaResponse.globalResponse("Success",HttpStatus.OK.value());
 	}
 
-	
+
 }

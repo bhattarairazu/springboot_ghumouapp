@@ -7,17 +7,21 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableWebMvc
 public class FileConfig implements WebMvcConfigurer {
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-        .addResourceHandler("/ghumoufiles/**")
-        .addResourceLocations("file:/ghumoufiles/");
-    }
+//	@Override
+//	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//
+//	    registry.addResourceHandler("/resources/**")
+//	    .addResourceLocations("/resources/","classpath:/other-resources/","classpath:/static/");
+//
+//	}
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
-       // .addCorsMappings("");
-    }
+        registry.addMapping("/**").
+        allowedMethods("GET", "POST", "PUT", "DELETE","PATCH").allowedOrigins("http://localhost:3000")
+        .allowedHeaders("*");
+//
+//
+//       // .addCorsMappings("");
+   }
 }

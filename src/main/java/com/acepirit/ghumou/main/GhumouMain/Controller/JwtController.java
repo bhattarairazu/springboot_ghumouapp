@@ -1,5 +1,6 @@
 package com.acepirit.ghumou.main.GhumouMain.Controller;
 
+import com.acepirit.ghumou.main.GhumouMain.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import com.acepirit.ghumou.main.GhumouMain.Utils.Jwtutil;
 @RestController
 public class JwtController {
 	@Autowired
-	private AuthenticateService authenService;
+	private UserService authenService;
 	
 	@Autowired
 	private Jwtutil jwtFilter;
@@ -57,18 +58,18 @@ public class JwtController {
 	}
 	
 	//initila signup for users
-	@PostMapping("/signup")
-	public ResponseEntity<?> signupUser(@RequestBody AuthenticateRequest authenrequest) {
-		AuthenticateRequest auth = authenService.findByUserName(authenrequest.getUsername());
-		if(auth==null) {
-			authenrequest.setPassword(passwordEncoder.encode(authenrequest.getPassword()));;
-			authenRepository.save(authenrequest);
-			
-			return globalResponse.globalResponse("Success",HttpStatus.CREATED.value());
-		}else {
-			return globalResponse.globalResponse("Username should be unique.Please select another username",HttpStatus.BAD_REQUEST.value());
-		}
-	}
+//	@PostMapping("/signup")
+//	public ResponseEntity<?> signupUser(@RequestBody AuthenticateRequest authenrequest) {
+//		AuthenticateRequest auth = authenService.findByUserName(authenrequest.getUsername());
+//		if(auth==null) {
+//			authenrequest.setPassword(passwordEncoder.encode(authenrequest.getPassword()));;
+//			authenRepository.save(authenrequest);
+//
+//			return globalResponse.globalResponse("Success",HttpStatus.CREATED.value());
+//		}else {
+//			return globalResponse.globalResponse("Username should be unique.Please select another username",HttpStatus.BAD_REQUEST.value());
+//		}
+//	}
 	
 	
 	
