@@ -41,7 +41,16 @@ public class OrderRequest {
 	private String phoneNo;
 	
 	private String address;
-	
+
+	private long discount;
+
+	private long vat;
+
+	private String paymentMethod;
+
+	private long totalAmount;
+
+
 
 	public String getName() {
 		return name;
@@ -178,6 +187,36 @@ public class OrderRequest {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-	
-	
+
+	public long getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(long discount) {
+		this.discount = discount;
+	}
+
+	public long getVat() {
+		return vat;
+	}
+
+	public void setVat(long vat) {
+		this.vat = vat;
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public long getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(long totalAmount) {
+		this.totalAmount = totalAmount;
+	}
 }

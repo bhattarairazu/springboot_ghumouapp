@@ -19,9 +19,7 @@ public class Exclusions {
 	@Column(name="exclusion")
 	private String exclusion;
 	
-	@Column(name="package_id")
-	private int packageId;
-	
+
 	public Exclusions() {}
 	
 	public Exclusions(String exclusion) {
@@ -35,15 +33,6 @@ public class Exclusions {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public int getPackageId() {
-		return packageId;
-	}
-
-	public void setPackageId(int packageId) {
-		this.packageId = packageId;
-	}
-
 
 	public String getExclusion() {
 		return exclusion;

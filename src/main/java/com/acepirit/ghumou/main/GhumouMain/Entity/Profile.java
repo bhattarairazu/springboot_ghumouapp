@@ -31,6 +31,18 @@ public class Profile {
 	
 	@Column(name="profile_image")
 	private String profileImage;
+
+	@Column(name="organization_name")
+	private String organizationName;
+
+	@Column(name="registration_no")
+	private String registrationNo;
+
+	@Column(name="documents")
+	private String documents;
+
+	@Column(name="status")
+	private String status;
 	
 	public Profile() {}
 
@@ -89,9 +101,36 @@ public class Profile {
 	public void setProfileImage(String profileImage) {
 		this.profileImage = profileImage;
 	}
-	
-	
-	
-	
 
+	public String getOrganizationName() {
+		return organizationName;
+	}
+
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
+	}
+
+	public String getRegistrationNo() {
+		return registrationNo;
+	}
+
+	public void setRegistrationNo(String registrationNo) {
+		this.registrationNo = registrationNo;
+	}
+
+	public String getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(String documents) {
+		this.documents = documents;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

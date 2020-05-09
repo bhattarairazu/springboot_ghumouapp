@@ -20,10 +20,7 @@ public class Inclusions {
 	
 	@Column(name="inclusion")
 	private String inclusion;
-	
-	@Column(name="package_id")
-	private int packageId;
-	
+
 	public Inclusions() {}
 	
 	public Inclusions( String inclusion) {
@@ -37,15 +34,6 @@ public class Inclusions {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public int getPackageId() {
-		return packageId;
-	}
-
-	public void setPackageId(int packageId) {
-		this.packageId = packageId;
-	}
-
 
 
 	public String getInclusion() {

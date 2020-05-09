@@ -35,6 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		if(request.getRequestURI().equals("/admin_v1/**")){
 			return;
 		}
+
 		final String authorizationHeader = request.getHeader("Authorization");
 		String username = null;
 		String jwt = null;
@@ -43,9 +44,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			jwt = authorizationHeader.substring(7);
 			username = jwtUtils.extractUsername(jwt);
 		}
+				if(username!=null && request.getRequestURI().endsWith("/logout")){
+
+				}
 		
 			if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
 				UserDetails userDetails =userDetailsService.loadUserByUsername(username);
+				System.out.println("Spring logoing user");
 				
 				if(jwtUtils.validateToken(jwt, userDetails)) {
 					UsernamePasswordAuthenticationToken usernametoken = 
@@ -54,6 +59,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 					SecurityContextHolder.getContext().setAuthentication(usernametoken);
 				}
 				
+			}else{
+				//System.out.println("Spring logout ");
 			}
 			
 		filterChain.doFilter(request, response);

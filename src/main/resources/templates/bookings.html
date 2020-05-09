@@ -403,15 +403,23 @@ to get the desired effect
                 		<tr th:each="order:${orders}">
                 			<td th:text="${order.id}"></td>
                 			<td th:text="${order.orderDate}"></td>
-                			<td th:text="${order.packages.packageTitle}"></td>
+                			<td><a th:href="@{/admin_v1/packagedetail/{id}(id=${order.packages.id})}" th:text="${order.packages.packageTitle}"></a></td>
                 			<td th:text="${order.bookingAmount}"></td>
                 			<td th:text="${order.totalPaidStatus}"></td>
                 			<td th:text="${order.departureDate}"></td>
-                			<td th:text="${order.orderStatus}"></td>
-                			<td th:text="${order.user.userName}"></td>
+                			<td th:switch="${order.orderStatus}">
+
+                                  <span th:case="BOOKED" th:text="BOOKED" class="badge badge-success"></span>
+
+                                  <span th:case="PENDING" th:text="PENDING" class="badge badge-info"></span>
+
+                                   <span th:case="CANCELLED" th:text="CANCELLED" class="badge badge-danger"></span>
+
+                            </td>
+                            <td><a th:href="@{/admin_v1/user/profile/{id}(id=${order.user.id})}" th:text="${order.user.userName}"></a></td>
                 			<td class="project-actions text-right">
                 			<a class="btn btn-primary btn-sm" href="/admin/packagedetails"> <i class="fas fa-folder"></i>View</a>
-                			
+
                 			<a class="btn btn-danger btn-sm" href="/admin/packagedetails"> <i class="fas fa-trash"></i>Cancel</a>
                 			
                 			<a class="btn btn-info btn-sm" href="/admin/packagedetails"> <i class="fas fa-print"></i>Print</a>

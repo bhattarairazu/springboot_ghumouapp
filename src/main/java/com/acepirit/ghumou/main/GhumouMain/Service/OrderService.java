@@ -21,6 +21,8 @@ public interface OrderService {
 	void saveDirect(Orderpackage orderpackage);
 	
 	List<Orderpackage> findAll();
+
+	List<Orderpackage> findAllByPackagessPackageSellar(String sellar);
 	
 	
 

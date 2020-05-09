@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" th:href="@{/admin/dist/css/adminlte.min.css}">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" th:href="@{/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
     <!-- summernote -->
   <link rel="stylesheet" th:href="@{/admin/plugins/summernote/summernote-bs4.css}">
   <link rel="stylesheet" th:href="@{/admin/plugins/toastr/toastr.min.css}">
@@ -575,6 +577,7 @@ to get the desired effect
                           </div>
                           <!-- ./row -->
                         </section>
+                          <!-- ending -->
 
 
 
@@ -583,7 +586,60 @@ to get the desired effect
                       </div>
                       <!-- /.tab-pane -->
                     </div>
+
+                      <label for="checkboxSuccess1">
+                        Please Tick Mark a Specific Included Items in your package
+                      </label>
                     <!-- /.tab-content -->
+                      <div class="col-md-12">
+                        <!-- checkbox -->
+                        <input type="hidden" value="" th:field="*{icons}" id="hiddenfield" >
+
+                        <div class="form-group clearfix">
+                          <div class="icheck-success d-inline">
+
+                            <input type="checkbox" onchange="createInclusions(event)"  value="insurance" id="checkboxSuccess1">
+                            <label for="checkboxSuccess1">
+                              Insurance
+                            </label>
+                          </div>
+                          <div class="icheck-success d-inline">
+                            <input type="checkbox" onchange="createInclusions(event)" value="flights" id="checkboxSuccess2">
+                            <label for="checkboxSuccess2">
+                              Flights
+                            </label>
+                          </div>
+                          <div class="icheck-success d-inline">
+                            <input type="checkbox" onchange="createInclusions(event)" value="tourguide" id="checkboxSuccess3">
+                            <label for="checkboxSuccess3">
+                              Tour Guide
+                            </label>
+                          </div>
+                          <div class="icheck-success d-inline">
+                            <input type="checkbox" onchange="createInclusions(event)" value="hotel" id="checkboxSuccess4">
+                            <label for="checkboxSuccess4">
+                              Hotel
+                            </label>
+                          </div>
+                          <div class="icheck-success d-inline">
+                            <input type="checkbox" onchange="createInclusions(event)" value="travel"  id="checkboxSuccess5">
+                            <label for="checkboxSuccess5">
+                              Travel
+                            </label>
+                          </div>
+                          <div class="icheck-success d-inline">
+                            <input type="checkbox" onchange="createInclusions(event)" value="meals" id="checkboxSuccess6">
+                            <label for="checkboxSuccess6">
+                              Meals
+                            </label>
+                          </div>
+                          <div class="icheck-success d-inline">
+                            <input type="checkbox" onchange="createInclusions(event)" value="accomodation"   id="checkboxSuccess7">
+                            <label for="checkboxSuccess7">
+                              Accomodation
+                            </label>
+                          </div>
+                        </div>
                   </div>
               </div>
               <div class="row">
@@ -599,7 +655,6 @@ to get the desired effect
               </div>
             </div>
 
-            <!-- ending -->
 
 
 
@@ -669,7 +724,21 @@ $(function () {
   // Summernote
   $('.textarea').summernote()
 })
-
+    var inclusionArray = [];
+    function createInclusions(event){
+      const target = event.target;
+      if (target.checked) {
+        inclusionArray.push(target.value);
+      } else {
+        var index = inclusionArray.indexOf(target.value);
+        if (index > -1) {
+          inclusionArray.splice(index, 1);
+        }
+      }
+      var data = 	inclusionArray.join(",")
+      console.log(data);
+      $("#hiddenfield").val(data);
+    }
 </script>
 
 

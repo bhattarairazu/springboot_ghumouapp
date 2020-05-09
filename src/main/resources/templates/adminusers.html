@@ -285,12 +285,12 @@ to get the desired effect
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Payments </h1>
+            <h1 class="m-0 text-dark">Admin User </h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Payments </li>
+              <li class="breadcrumb-item active">AdminUser </li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -303,54 +303,70 @@ to get the desired effect
             <div class="card-header">
               <div class="row">
                 <div class="col-sm-10">
-                  <h3 class="card-title">Payments Lists</h3>
+                  <h3 class="card-title">Admin Lists</h3>
             
                 </div>
                 <div class="col-sm-2">
-                    <a th:href="@{/admin/addpackage}"><button type="button" class="btn btn-block btn-primary btn-lg">Print Payment List</button></a>
-                  <img src="kdkkdkd" width="3%" height="4%">
+                  <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#modal-lg">
+                    Add Admin User
+                  </button>
+
             
                 </div>
               </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-            <div style="width: 100%; overflow: fixed; white-space: nowrap;">'
+            <div style="width: 100%; overflow: hidden; white-space: nowrap;">'
               <table style="table-layout: fixed;" id="example2" class="table table-bordered table-striped fixed">
                 <thead>
                 <tr>
                   <th style="width: 3%;">#Id</th>
                   <th>Date</th>
-                  <th>Payment Type</th>
-                  <th>Paid Amount</th>
-                  <th>Total Amount</th>
-                  
-                  <th>Remaining Amount</th>
                   <th>Username</th>
-                  
-                  <th>Order Id</th>
+                  <th>e-mail</th>
+                  <th>Status</th>
                   <th style="width: 15%;">Action</th>
                 
                 </tr>
                 </thead>
                 	<tbody>
-                	
+                	  <tr th:each="user:${users}">
+                        <td class="ri" th:text="${user.id}"></td>
+
+                        <td>2019-10-10</td>
+
+                        <td th:text="${user.userName}"></td>
+
+                        <td th:text="${user.email}"></td>
+
+                        <td>
+                          <span th:if="${user.enabled==true}" th:text="ADMIN" class="badge badge-success"></span>
+
+                          <span th:unless="${user.enabled==true}" th:text="MODERATOR" class="badge badge-info"></span>
+                        </td>
+                        <td>
+                          <select id="selectUser" class="form-control custom-select">
+                            <option selected disabled th:text="'Change User Type'"></option>
+                            <option th:value="'admin'" th:text="'Make Admin'"></option>
+                            <option th:value="'mod'" th:text="'Make Moderator'"></option>
+
+
+                          </select>
+                        </td>
+
+                      </tr>
                 	</tbody>
                
                 <tfoot>
                 <tr>
-                <th style="width: 3%;">#Id</th>
-                  
-                   <th>Date</th>
-                  <th>Payment Type</th>
-                  <th>Paid Amount</th>
-                  <th>Total Amount</th>
-                  
-                  <th>Remaining Amount</th>
+                  <th style="width: 3%;">#Id</th>
+                  <th>Date</th>
                   <th>Username</th>
-                  
-                  <th>Order Id</th>
+                  <th>e-mail</th>
+                  <th>Status</th>
                   <th style="width: 15%;">Action</th>
+
                 </tr>
                 </tfoot>
               </table>
@@ -358,7 +374,57 @@ to get the desired effect
             </div>
             <!-- /.card-body -->
           </div>
+                <div class="modal fade" id="modal-lg">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Add New Admin</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <form id="formdatas" th:action="@{/admin_v1/adminadd}" method="post">
 
+                        <div class="modal-body">
+                            <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="inputName">Username</label>
+                                    <input type="text" id="username" name="username" class="form-control">
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="inputName">Password</label>
+                                    <input type="text" id="password"  name="password" class="form-control">
+                                  </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                  <div class="form-group">
+
+                                    <select id="selection" name="role" class="form-control custom-select">
+                                      <option selected disabled th:text="'Change User Type'"></option>
+                                      <option th:value="'admin'" th:text="'Make Admin'"></option>
+                                      <option th:value="'mod'" th:text="'Make Moderator'"></option>
+
+
+                                    </select>
+                                  </div>
+                                </div>
+
+
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <input type="submit" class="btn btn-primary" id="adds" value="Add"/>
+                        </div>
+                      </form>
+                    </div>
+
+                    <!-- /.modal-content -->
+                  </div>
+                  <!-- /.modal-dialog -->
+                </div>
 	</section>
 
 
@@ -435,6 +501,17 @@ to get the desired effect
     $('.toastrDefaultWarning').click(function() {
       toastr.warning('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
     });
+  $('select').on('change',function () {
+      var val = this.value;
+    var $row = $(this).closest("tr");    // Find the row
+    var $text = $row.find(".ri").text(); // Find the text
+    // alert("hello");
+    console.log($text);
+    if(confirm("Are You Sure You want to Change this user?")){
+      window.location.href = '/ghumou/admin_v1/changeuser/'+parseInt($text)+"/"+val;
+    }
+
+  })
  
   
 </script>

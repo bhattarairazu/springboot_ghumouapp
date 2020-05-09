@@ -6,7 +6,16 @@ public class LoginResponse {
 	private long timeStamp;
 	private int userid;
 	private String jwt;
-	
+	private String role;
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public LoginResponse() {}
 	
 	public String getMsg() {

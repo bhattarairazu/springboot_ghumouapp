@@ -27,6 +27,8 @@ public class FormPackageGet {
 
     private MultipartFile[] images;
 
+    private String icons;
+
     private Inclusions inclusions;
 
     private Exclusions exclusions;
@@ -143,5 +145,13 @@ public class FormPackageGet {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIcons() {
+        return icons;
+    }
+
+    public void setIcons(String icons) {
+        this.icons = icons;
     }
 }

@@ -57,6 +57,10 @@ public class OrderServiceImpl implements OrderService {
 		orderpackage.setAddress(order.getAddress());
 		orderpackage.setEmail(order.getEmail());
 		orderpackage.setPhoneNo(order.getPhoneNo());
+		orderpackage.setDiscount(order.getDiscount());
+		orderpackage.setTotalAmount(order.getTotalAmount());
+		orderpackage.setVat(order.getVat());
+		orderpackage.setPaymentMethod(order.getPaymentMethod());
 		orderRepository.save(orderpackage);
 		
 	}
@@ -82,6 +86,10 @@ public class OrderServiceImpl implements OrderService {
 			orderpackage.setAddress(order.getAddress());
 			orderpackage.setEmail(order.getEmail());
 			orderpackage.setPhoneNo(order.getPhoneNo());
+			orderpackage.setDiscount(order.getDiscount());
+			orderpackage.setTotalAmount(order.getTotalAmount());
+			orderpackage.setVat(order.getVat());
+			orderpackage.setPaymentMethod(order.getPaymentMethod());
 			orderRepository.save(orderpackage);
 			
 		}else {
@@ -114,6 +122,12 @@ public class OrderServiceImpl implements OrderService {
 	public List<Orderpackage> findAll() {
 		
 		return orderRepository.findAll();
+	}
+
+	@Override
+	public List<Orderpackage> findAllByPackagessPackageSellar(String sellar) {
+		List<Orderpackage> allOrder = orderRepository.findAllByPackagessPackageSellar(sellar);
+		return allOrder;
 	}
 
 

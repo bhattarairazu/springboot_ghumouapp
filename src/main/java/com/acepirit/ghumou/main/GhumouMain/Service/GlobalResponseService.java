@@ -2,22 +2,11 @@ package com.acepirit.ghumou.main.GhumouMain.Service;
 
 import java.util.List;
 
+import com.acepirit.ghumou.main.GhumouMain.Entity.*;
+import com.acepirit.ghumou.main.GhumouMain.Response.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import com.acepirit.ghumou.main.GhumouMain.Entity.AddToFavourites;
-import com.acepirit.ghumou.main.GhumouMain.Entity.Orderpackage;
-import com.acepirit.ghumou.main.GhumouMain.Entity.Packagess;
-import com.acepirit.ghumou.main.GhumouMain.Entity.User;
-import com.acepirit.ghumou.main.GhumouMain.Response.AddtoFavouriteListResponse;
-import com.acepirit.ghumou.main.GhumouMain.Response.GResponseTemplate;
-import com.acepirit.ghumou.main.GhumouMain.Response.GlobalResponse;
-import com.acepirit.ghumou.main.GhumouMain.Response.ListOrderResponse;
-import com.acepirit.ghumou.main.GhumouMain.Response.ListResponseTemplate;
-import com.acepirit.ghumou.main.GhumouMain.Response.LoginResponse;
-import com.acepirit.ghumou.main.GhumouMain.Response.PackageListResponse;
-import com.acepirit.ghumou.main.GhumouMain.Response.ProfilePicChnageResponse;
 
 @Service
 public class GlobalResponseService {
@@ -41,13 +30,27 @@ public class GlobalResponseService {
 		gr.setResults(obj);
 		return ResponseEntity.ok(gr);
 	}
-	
-	public ResponseEntity<LoginResponse> loginSuccessResponse(int id,String jwt){
+	//similar packages response
+	public ResponseEntity<SimilarPackagesResponse> similarResponse(Packagess packageDetail,List<Packagess> similarList){
+		SimilarPackagesResponse simiar = new SimilarPackagesResponse();
+		simiar.setMsg("Success");
+		simiar.setStatusCode(HttpStatus.OK.value());
+		simiar.setTimestamp(System.currentTimeMillis());
+		simiar.setResults(packageDetail);
+		simiar.setSimilarPackages(similarList);
+		return ResponseEntity.ok(simiar);
+
+	}
+
+
+
+	public ResponseEntity<LoginResponse> loginSuccessResponse(int id,String jwt,String role){
 		LoginResponse responseLogin = new LoginResponse();
 		responseLogin.setMsg("Success");
 		responseLogin.setStatusCode(HttpStatus.OK.value());
 		responseLogin.setTimeStamp(System.currentTimeMillis());
 		responseLogin.setUserid(id);
+		responseLogin.setRole(role);
 		responseLogin.setJwt(jwt);
 		
 		return ResponseEntity.ok(responseLogin);
@@ -56,6 +59,15 @@ public class GlobalResponseService {
 	
 	public ResponseEntity<ListResponseTemplate> listResponse(List<User> objList){
 		ListResponseTemplate lr = new ListResponseTemplate();
+		lr.setMsg("Success");
+		lr.setStatusCode(HttpStatus.CREATED.value());
+		lr.setTimestamp(System.currentTimeMillis());
+		lr.setResults(objList);
+		return ResponseEntity.ok(lr);
+	}
+	//review list response
+	public ResponseEntity<ListReviewResponse> listReview(List<Review> objList){
+		ListReviewResponse lr = new ListReviewResponse();
 		lr.setMsg("Success");
 		lr.setStatusCode(HttpStatus.CREATED.value());
 		lr.setTimestamp(System.currentTimeMillis());

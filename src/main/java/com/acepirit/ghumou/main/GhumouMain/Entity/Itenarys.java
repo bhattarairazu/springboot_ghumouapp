@@ -20,21 +20,11 @@ public class Itenarys {
 	@Column(name="itenary")
 	private String itenary;
 	
-	@Column(name="package_id")
-	private int packageId;
-	
+
 	public Itenarys() {}
 
 	public Itenarys(String itenary) {
 		this.itenary = itenary;
-	}
-
-	public int getPackageId() {
-		return packageId;
-	}
-
-	public void setPackageId(int packageId) {
-		this.packageId = packageId;
 	}
 
 	public int getId() {

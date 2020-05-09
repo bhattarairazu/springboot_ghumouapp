@@ -283,12 +283,12 @@ to get the desired effect
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Payments </h1>
+            <h1 class="m-0 text-dark">Travel Partners </h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Payments </li>
+              <li class="breadcrumb-item active">Travel Partners </li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -301,11 +301,11 @@ to get the desired effect
             <div class="card-header">
               <div class="row">
                 <div class="col-sm-10">
-                  <h3 class="card-title">Payments Lists</h3>
+                  <h3 class="card-title">Travel Partners List</h3>
             
                 </div>
                 <div class="col-sm-2">
-                    <a th:href="@{/admin/addpackage}"><button type="button" class="btn btn-block btn-primary btn-lg">Print Payment List</button></a>
+                    <a th:href="@{/admin/addpackage}"><button type="button" class="btn btn-block btn-primary btn-lg">Print List</button></a>
                   <img src="kdkkdkd" width="3%" height="4%">
             
                 </div>
@@ -318,20 +318,53 @@ to get the desired effect
                 <thead>
                 <tr>
                   <th style="width: 3%;">#Id</th>
-                  <th>Date</th>
-                  <th>Payment Type</th>
-                  <th>Paid Amount</th>
-                  <th>Total Amount</th>
+                  <th style="width: 10%;">JoinedDate</th>
+                  <th style="width: 18%;">Organizatio Name</th>
+                  <th style="width: 7%;">Phone</th>
+                  <th style="width: 7%;">Total Packages</th>
                   
-                  <th>Remaining Amount</th>
-                  <th>Username</th>
+                  <th style="width: 12%;">E-mail</th>
+                  <th style="width: 8%;">Address</th>
                   
-                  <th>Order Id</th>
-                  <th style="width: 15%;">Action</th>
+                  <th style="width: 5%;">Status</th>
+                  <th style="width: 10%;">Action</th>
                 
                 </tr>
                 </thead>
                 	<tbody>
+                      <tr th:each="sellar:${sellars}">
+                        <td th:text="${sellar.id}"></td>
+
+                        <td th:text="${sellar.createdAt}"></td>
+
+                        <td th:text="${sellar.user_profile.organizationName}"></td>
+
+                        <td th:text="${sellar.user_profile.phone}"></td>
+
+                        <td th:text="5"></td>
+
+                        <td th:text="${sellar.email}"></td>
+
+                        <td th:text="${sellar.user_profile.country}"></td>
+
+                        <td th:switch="${sellar.user_profile.status}">
+                          <span th:case="PENDING" class="badge badge-info">PENDING</span>
+                          <span th:case="APPROVED" class="badge badge-success">APPROVED</span>
+                          <span th:case="REJECTED" class="badge badge-danger">REJECTED</span>
+
+                        </td>
+                        <td class="project-actions text-right">
+                          <a class="btn btn-outline-primary btn-sm" th:href="@{/admin_v1/user/profile/{id}(id=${sellar.id})}"> <i class="fas fa-folder"></i>View</a>
+
+                          <button class="btn btn-outline-warning btn-sm" id="deletesbtn"> <i class="fas fa-mail-forward"></i>Send mail</button>
+
+
+
+
+                        </td>
+
+
+                      </tr>
                 	
                 	</tbody>
                

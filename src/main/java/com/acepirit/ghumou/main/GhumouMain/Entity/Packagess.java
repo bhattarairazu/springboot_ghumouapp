@@ -44,25 +44,32 @@ public class Packagess {
 	private String packageType;
 	
 	@Column(name="rating")
-	private int rating;
+	private double rating;
 	
 	@Column(name="views")
 	private int views;
-	
+
+	@Column(name="icons")
+	private String icons;
+
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="package_id",referencedColumnName = "package_id")
 	private List<Images> images;
-	
-	@OneToOne(cascade = CascadeType.ALL)
+
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="package_id",referencedColumnName = "package_id")
+	private List<Review> reviews;
+
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="inclusion_id",referencedColumnName = "id")
 	private Inclusions inclusions;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="package_id",referencedColumnName = "package_id")
+
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="exlcusion_id",referencedColumnName = "id")
 	private Exclusions exclusions;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="package_id",referencedColumnName = "package_id")
+	@JoinColumn(name="itenary_id",referencedColumnName = "id")
 	private Itenarys itenarys;
 
 	public Packagess() {}
@@ -156,11 +163,11 @@ public class Packagess {
 		this.packageType = packageType;
 	}
 
-	public int getRating() {
+	public double getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(double rating) {
 		this.rating = rating;
 	}
 
@@ -202,5 +209,21 @@ public class Packagess {
 
 	public void setItenarys(Itenarys itenarys) {
 		this.itenarys = itenarys;
+	}
+
+	public String getIcons() {
+		return icons;
+	}
+
+	public void setIcons(String icons) {
+		this.icons = icons;
+	}
+
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
 	}
 }

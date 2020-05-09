@@ -2,14 +2,15 @@ package com.acepirit.ghumou.main.GhumouMain.DashboardController;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.*;
+import com.acepirit.ghumou.main.GhumouMain.Repository.RoleRepository;
 import com.acepirit.ghumou.main.GhumouMain.Response.GlobalResponse;
 import com.acepirit.ghumou.main.GhumouMain.Service.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TestHtmlCOntroller {
 	@Autowired
 	PackageService packageService;
+
+	@Autowired
+	RoleRepository roleRepository;
 
 	@Autowired
 	UserService userService;
@@ -71,17 +75,106 @@ public class TestHtmlCOntroller {
 
 	@GetMapping("/user")
 	public String showUser(Model theModel) {
-		List<User> usrs = userService.findAll();
+		List<User> usrs = userService.findAllByRole("ROLE_USER");
 		theModel.addAttribute("users",usrs);
 		return "users";
 
 	}
-	@GetMapping("/adminuser")
-	public String showAdminUsers() {
-		return "adminusers";
+	//userprofile
+	@GetMapping("/user/profile/{id}")
+	public String showUserProfile(@PathVariable int id, Model theModel){
+		User singleuser = userService.findById(id);
+		Set<Role> roles = singleuser.getRoles();
+
+		for(Role role:roles){
+			if(role.getName().matches("ROLE_USER")){
+				List<Orderpackage> orderList = orderService.findAllByUser(singleuser);
+
+				theModel.addAttribute("user",singleuser);
+
+				theModel.addAttribute("u","u");
+				theModel.addAttribute("orders",orderList);
+
+			}else if(role.getName().matches("ROLE_SELLAR")){
+				theModel.addAttribute("user",singleuser);
+				theModel.addAttribute("sellar","sellar");
+			}
+		}
+
+		return "profile";
 	}
+
+
+
+	@GetMapping("/adminuser")
+	public String showAdminUsers(Model theModel) {
+		List<User> userAdmin = userService.findAllByRole("ROLE_ADMIN");
+
+
+		//merging two list
+		//		List<User> mergeList = Stream.of(userAdmin, userMod)
+//				.flatMap(x -> x.stream())
+//				.collect(Collectors.toList());
+
+		theModel.addAttribute("users",userAdmin);
+
+		return "adminusers";
+
+	}
+	//change usertype
+	@GetMapping("/changeuser/{id}/{type}")
+	public String changeUser(@PathVariable int id,@PathVariable String type){
+		System.out.println(type);
+		User user = userService.findById(id);
+		System.out.println("enabl"+user.isEnabled());
+		if(type.matches("admin")){
+			System.out.println("inside admin");
+			user.setEnabled(true);
+		}else{
+
+			System.out.println("inside mod");
+			user.setEnabled(false);
+		}
+
+		System.out.println("enabl"+user.isEnabled());
+		userService.save(user);
+
+		return "redirect:../../adminuser";
+	}
+
+	//adding admin user
+	@PostMapping("/adminadd")
+	public String addAdmin(@RequestParam("username") String username,@RequestParam("password") String password,
+						   @RequestParam("role") String role,Model theModel){
+		User user = new User();
+		user.setUserName(username);
+		user.setPassword(password);
+		if(role.matches("ROLE_ADMIN")){
+			user.setEnabled(true);
+		}
+		Set<Role> roles = new HashSet<>();
+		Role rol = roleRepository.findRoleByName("ROLE_ADMIN");
+		roles.add(rol);
+		System.out.println("user"+username+"password"+password+"roe"+role);
+		user.setRoles(roles);
+		userService.save(user);
+		return "redirect:adminuser";
+	}
+
+
+
+
 	@GetMapping("/travelpartner")
-	public String showTravelPartners() {
+	public String showTravelPartners(Model theModel) {
+		List<User> userSellar = userService.findAllByRole("ROLE_SELLAR");
+
+
+		//merging two list
+		//		List<User> mergeList = Stream.of(userAdmin, userMod)
+//				.flatMap(x -> x.stream())
+//				.collect(Collectors.toList());
+
+		theModel.addAttribute("sellars",userSellar);
 		return "travelpartners";
 	}
 
@@ -90,6 +183,7 @@ public class TestHtmlCOntroller {
 	public String showAnalytics() {
 		return "analytics";
 	}
+
 	@GetMapping("/package")
 	public String listPackage(Model theModel) {
 		List<Packagess> allpackages = packageService.findAll();
@@ -121,22 +215,35 @@ public class TestHtmlCOntroller {
 	@PostMapping("/packageupload")
 	public String upload(@ModelAttribute("packages") FormPackageGet packages, Model theNewModel) {
 		Packagess pack = null;
+		Exclusions exc = null;
+		Inclusions incl = null;
+		Itenarys itenar = null;
+
 		if(packages.getId()!=0){
 			pack = packageService.findById(packages.getId());
 
 			System.out.println("id "+packages.getId());
 		}else{
 			pack = new Packagess();
+			exc = new Exclusions();
+			incl = new Inclusions();
+			itenar = new Itenarys();
 
 			System.out.println("id new package id ");
 		}
 
 		pack.setCreatedAt(new Date(System.currentTimeMillis()));
 		pack.setDuration(packages.getDuration());
+		//settting exclusion first
+		//exc.setExclusion(packages.getExclusions().getExclusion());
 		pack.setExclusions(packages.getExclusions());
 
+		//incl.setInclusion(packages.getInclusions().getInclusion());
 		pack.setInclusions(packages.getInclusions());
+
+		//itenar.setItenary(packages.getItenarys().getItenary());
 		pack.setItenarys(packages.getItenarys());
+
 		pack.setPackageDescription(packages.getPackageDescription());
 		pack.setOffers(packages.getOffers());
 		pack.setViews(0);
@@ -146,7 +253,8 @@ public class TestHtmlCOntroller {
 		pack.setPackageTitle(packages.getPackageTitle());
 		pack.setPackageSellar(packages.getPackageSellar());
 		pack.setPackageType(packages.getPackageType());
-
+		pack.setIcons(packages.getIcons());
+		System.out.println("icons values "+packages.getIcons());
 		String thumnailPath=null;
 		if(packages.getThumnail()!=null) {
 			try {
@@ -177,6 +285,7 @@ public class TestHtmlCOntroller {
 		}else {
 			return "redirect:addpackages";
 		}
+		System.out.println("Packages "+pack);
 		packageService.save(pack);
 
 		return "redirect:package";

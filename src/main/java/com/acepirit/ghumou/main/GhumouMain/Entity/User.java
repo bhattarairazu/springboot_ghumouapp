@@ -2,6 +2,7 @@ package com.acepirit.ghumou.main.GhumouMain.Entity;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,10 @@ public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
+
+	@Column(name="created_at")
+	private Date createdAt;
+
 	@Column(name="first_name")
 	private String firstName;
 	
@@ -30,6 +34,8 @@ public class User {
 	
 	@Column(name="password")
 	private String password;
+
+
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "user_roles",
@@ -114,5 +120,13 @@ public class User {
 
 	public void setUser_profile(Profile user_profile) {
 		this.user_profile = user_profile;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 }

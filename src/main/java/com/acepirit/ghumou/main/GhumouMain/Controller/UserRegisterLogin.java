@@ -63,7 +63,7 @@ public class UserRegisterLogin {
 
 	@PostMapping("/register")
 	@PreAuthorize("hasRole('ROLE_SUPERUSER') or hasRole('ROLE_USER') or hasRole('ROLE_SELLAR')")
-	public ResponseEntity<?> registerUser(@RequestPart("profileImage") MultipartFile profileImage,@RequestPart("user") User user){
+	public ResponseEntity<?> registerUser(@RequestPart("profileImage") MultipartFile profileImage,@RequestPart("documents") MultipartFile documents,@RequestPart("user") User user){
 		final String baseUrl = 
 				ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 		//System.out.println("Bawse url"+baseUrl);
@@ -79,6 +79,7 @@ public class UserRegisterLogin {
 		}
 		//store the image to the disk and save the profile image path to the users table
 		String profileImagePath=null;
+		String documentsImagePath = null;
 		if(profileImage!=null) {
 			try {
 				profileImagePath = fileUploadService.storeFile(profileImage);
@@ -87,12 +88,25 @@ public class UserRegisterLogin {
 				e.printStackTrace();
 			}
 		}
+		if(documents!=null){
+			try {
+				documentsImagePath = fileUploadService.storeFile(documents);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+
 		//check if the user contains roles or not
 		Set<Role> roleslist = user.getRoles();
 		Set<Role> newCollection = new HashSet<>();
 		//geting streams of roles from user
 
 		for (Role role : roleslist) {
+			if(role.getName().matches("ROLE_SELLAR")){
+				user.getUser_profile().setStatus("PENDING");
+			}
 			//checking null roles
 			if(role==null){
 				throw new RuntimeException("You need to enter role of the user.Please try again");
@@ -113,8 +127,9 @@ public class UserRegisterLogin {
 
 
 		System.out.println("Get profile image path"+profileImagePath);
-
+		user.setCreatedAt(new Date(System.currentTimeMillis()));
 		user.getUser_profile().setProfileImage(profileImagePath);
+		user.getUser_profile().setDocuments(documentsImagePath);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
 
@@ -188,22 +203,18 @@ public class UserRegisterLogin {
 	//for login
 	@PostMapping("/login")
 	public ResponseEntity<?> userLogin(@RequestBody AuthenticateRequest userlogin) throws Exception {
-//		boolean isEnabled = userService.findByUserName(userlogin.getUsername()).isEnabled();
-//		if(!isEnabled){
-//			throw new RuntimeException("Please verify your email before login");
-//		}
-//		try {
-//			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userlogin.getUsername(),userlogin.getPassword()));
-//
-//		}catch(BadCredentialsException ex) {
-//			throw new Exception("Incorrect username and password");
-//		}
 		boolean isLogin = userService.loginUser(userlogin,"API");
 		if(isLogin){
 
 			final UserDetails userDetails = userService.loadUserByUsername(userlogin.getUsername());
 			String jwt = jwtFilter.generateToken(userDetails);
-			return gresponse.loginSuccessResponse(userService.findByUserName(userlogin.getUsername()).getId(),jwt);
+			Set<Role> roles = userService.findByUserName(userlogin.getUsername()).getRoles();
+			String user_role = null;
+			for(Role role:roles){
+				user_role = role.getName();
+			}
+			return gresponse.loginSuccessResponse(userService.findByUserName(userlogin.getUsername()).getId(),jwt,user_role);
+			//userService.findByUserName(userlogin.getUsername()).getRoles();
 		}else{
 			return gresponse.globalResponse("Failed",HttpStatus.BAD_REQUEST.value());
 

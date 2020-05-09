@@ -73,48 +73,22 @@ public class Orderpackage {
 	
 	@Column(name="address")
 	private String address;
+
+	@Column(name="discount")
+	private long discount;
+
+	@Column(name="vat")
+	private long vat;
+
+	@Column(name="payment_method")
+	private String paymentMethod;
+
+	@Column(name="total_amount")
+	private long totalAmount;
 	
 	public Orderpackage() {}
-	public Orderpackage(int bookingAmount, int remainingAmount, boolean totalPaidStatus, Date orderDate, Date departureDate,
-			String orderFrom, int totalPeople, String orderNotes, String orderStatus, String orderMessage, User user,
-			Packagess packages) {
-		this.bookingAmount = bookingAmount;
-		this.remainingAmount = remainingAmount;
-		this.totalPaidStatus = totalPaidStatus;
-		this.orderDate = orderDate;
-		this.departureDate = departureDate;
-		this.orderFrom = orderFrom;
-		this.totalPeople = totalPeople;
-		this.orderNotes = orderNotes;
-		this.orderStatus = orderStatus;
-		this.orderMessage = orderMessage;
-		this.user = user;
-		this.packages = packages;
-	}
-	
 
-	public Orderpackage(int bookingAmount, int remainingAmount, boolean totalPaidStatus, Date orderDate,
-			Date departureDate, String orderFrom, int totalPeople, String orderNotes, String orderStatus,
-			String orderMessage, User user, Packagess packages, String name, String email, String phoneNo,
-			String address) {
-		super();
-		this.bookingAmount = bookingAmount;
-		this.remainingAmount = remainingAmount;
-		this.totalPaidStatus = totalPaidStatus;
-		this.orderDate = orderDate;
-		this.departureDate = departureDate;
-		this.orderFrom = orderFrom;
-		this.totalPeople = totalPeople;
-		this.orderNotes = orderNotes;
-		this.orderStatus = orderStatus;
-		this.orderMessage = orderMessage;
-		this.user = user;
-		this.packages = packages;
-		this.name = name;
-		this.email = email;
-		this.phoneNo = phoneNo;
-		this.address = address;
-	}
+
 	public int getId() {
 		return id;
 	}
@@ -243,8 +217,36 @@ public class Orderpackage {
 		this.address = address;
 	}
 
-	
-	
-	
+	public long getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(long discount) {
+		this.discount = discount;
+	}
+
+	public long getVat() {
+		return vat;
+	}
+
+	public void setVat(long vat) {
+		this.vat = vat;
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public long getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(long totalAmount) {
+		this.totalAmount = totalAmount;
+	}
 
 }

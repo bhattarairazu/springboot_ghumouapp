@@ -40,4 +40,7 @@ public interface PackageService {
 
 	public List<Packagess> findByOrderByCreatedAtDesc();
 
+	List<Packagess> findPackagessByKeywordWithOrder(String keyword,String ordering);
+
+	List<Packagess> findPackagesBySearchWithRecent(String packageName);
 }

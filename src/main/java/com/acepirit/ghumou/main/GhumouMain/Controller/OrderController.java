@@ -92,5 +92,13 @@ public class OrderController {
 		return globaResponse.globalResponse("Success",HttpStatus.OK.value());
 	}
 
+	//getting order with respect to seller name
+	@GetMapping(value = "/orders",params="sellar")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLAR')")
+	public ResponseEntity<?> getOrderBySellar(@RequestParam("sellar") String sellar){
+		List<Orderpackage> orders = orderService.findAllByPackagessPackageSellar(sellar);
+		return globaResponse.listOrderResponse(orders);
+	}
+
 
 }

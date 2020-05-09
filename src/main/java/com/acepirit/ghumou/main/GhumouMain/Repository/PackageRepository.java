@@ -20,6 +20,15 @@ public interface PackageRepository extends JpaRepository<Packagess, Integer>{
 	@Query("SELECT pr FROM Packagess pr WHERE pr.packageTitle LIKE %:keyword% OR pr.packageDescription LIKE %:keyword% OR pr.packageSellar LIKE %:keyword% OR pr.packageType LIKE %:keyword% OR pr.duration LIKE %:keyword%")
 	public List<Packagess> findPackagesByKeyword(@Param("keyword") String keyword);
 
+	//search by oorder by and ordering type filter
+	@Query("SELECT p FROM Packagess p WHERE p.packageTitle LIKE %:keyword% OR p.packageSellar LIKE %:keyword% OR p.packageType LIKE %:keyword% ORDER BY :ordering DESC")
+	List<Packagess> findPackagessByKeywordWithOrder(@Param("keyword") String keyword,@Param("ordering") String ordering);
+
+	//similar packages data
+	@Query(value = "SELECT * from packages WHERE package_title LIKE %:packagename% ORDER BY views DESC LIMIT 5",nativeQuery = true)
+	List<Packagess> findSimilarPacageks(@Param("packagename") String packagename);
+
+	//ordering packages by rating only
 	public List<Packagess> findByRating(int rating);
 	
 	//ordering according to most view packages

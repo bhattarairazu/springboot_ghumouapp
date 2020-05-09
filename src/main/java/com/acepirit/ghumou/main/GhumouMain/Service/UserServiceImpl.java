@@ -32,6 +32,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
+	@Autowired
+	private RoleRepository roleRepository;
 	//private NullAwareBeanUtilsBean beaUtils;
 	//for uploading file
 	@Autowired
@@ -46,8 +48,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ConfirmationTokenReposiroty confirmationTokenRepository;
 
-	@Autowired
-	private RoleRepository roleRepository;
 	@Autowired
 	private Jwtutil jwtFilter;
 
@@ -229,4 +229,11 @@ public class UserServiceImpl implements UserService {
 //		return gresponse.loginSuccessResponse(findByUserName(userlogin.getUsername()).getId(), jwt);
 
 		}
+
+	@Override
+	public List<User> findAllByRole(String rolename) {
+		Role role = roleRepository.findRoleByName(rolename);
+		List<User> users = userRepository.findAllByRoles(role);
+		return users;
 	}
+}

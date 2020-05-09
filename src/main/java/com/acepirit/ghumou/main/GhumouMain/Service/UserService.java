@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.AuthenticateRequest;
 import com.acepirit.ghumou.main.GhumouMain.Entity.PasswordChange;
+import com.acepirit.ghumou.main.GhumouMain.Entity.Role;
 import com.acepirit.ghumou.main.GhumouMain.Entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -35,5 +36,7 @@ public interface UserService extends UserDetailsService {
 	void patch(User user);
 
 	boolean loginUser(AuthenticateRequest userlogin, String method) throws Exception;
+
+	public List<User> findAllByRole(String rolename);
 
 }

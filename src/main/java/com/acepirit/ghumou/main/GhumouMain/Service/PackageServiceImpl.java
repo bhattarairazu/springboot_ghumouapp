@@ -109,5 +109,18 @@ public class PackageServiceImpl implements PackageService {
 		return recentlyadded;
 	}
 
-	
+	@Override
+	public List<Packagess> findPackagessByKeywordWithOrder(String keyword, String ordering) {
+		List<Packagess> allPakcagesOrdered = packageRepository.findPackagessByKeywordWithOrder(keyword,ordering);
+		return allPakcagesOrdered;
+	}
+
+	///for similar packages
+	@Override
+	public List<Packagess> findPackagesBySearchWithRecent(String packageName) {
+		List<Packagess> similarPackage = packageRepository.findSimilarPacageks(packageName);
+		return similarPackage;
+	}
+
+
 }

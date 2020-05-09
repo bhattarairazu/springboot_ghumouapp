@@ -3,6 +3,7 @@ package com.acepirit.ghumou.main.GhumouMain.Repository;
 import java.util.List;
 import java.util.Map;
 
+import com.acepirit.ghumou.main.GhumouMain.Entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query("SELECT u FROM User u WHERE u.firstName LIKE %:keyword% OR u.lastName LIKE %:keyword% OR u.userName LIKE %:keyword%")
 	public List<User> findUsersByKeyword(@Param("keyword") String keyword);
 
+	public List<User> findAllByRoles(Role role);
 
 
 }
