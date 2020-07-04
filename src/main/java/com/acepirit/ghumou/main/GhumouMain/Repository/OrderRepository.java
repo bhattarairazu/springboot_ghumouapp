@@ -16,5 +16,7 @@ public interface OrderRepository extends JpaRepository<Orderpackage, Integer> {
 	@Query("SELECT o FROM Orderpackage o WHERE o.packages.packageSellar=:packageSellar")
 	List<Orderpackage> findAllByPackagessPackageSellar(@Param("packageSellar") String packageSellar);
 
+	@Query(value = "SELECT LAST_INSERT_ID() from order_package limit 1",nativeQuery = true)
+	int lastInsertId();
 	
 }

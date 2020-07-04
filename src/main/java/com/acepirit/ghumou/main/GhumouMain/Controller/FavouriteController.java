@@ -2,6 +2,7 @@ package com.acepirit.ghumou.main.GhumouMain.Controller;
 
 import java.util.List;
 
+import com.acepirit.ghumou.main.GhumouMain.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,6 @@ import com.acepirit.ghumou.main.GhumouMain.Entity.AddToFavourites;
 import com.acepirit.ghumou.main.GhumouMain.Entity.GettingFavouriteData;
 import com.acepirit.ghumou.main.GhumouMain.Entity.Packagess;
 import com.acepirit.ghumou.main.GhumouMain.Entity.User;
-import com.acepirit.ghumou.main.GhumouMain.Service.FavouriteService;
-import com.acepirit.ghumou.main.GhumouMain.Service.GlobalResponseService;
-import com.acepirit.ghumou.main.GhumouMain.Service.PackageService;
-import com.acepirit.ghumou.main.GhumouMain.Service.UserService;
 
 @RestController
 @RequestMapping("api/v2/")
@@ -38,6 +35,9 @@ public class FavouriteController {
 	
 	@Autowired
 	private GlobalResponseService globalresponse;
+
+	@Autowired
+	private GlobalVariableService globalVariableService;
 	
 	@PostMapping("/favourite")
 	@PreAuthorize("hasRole('ROLE_USER')")
@@ -57,6 +57,10 @@ public class FavouriteController {
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<?> allFavorutei(@RequestParam("user_id") int user_id){
 		User user = userService.findById(user_id);
+		if(!user.getUserName().equals(globalVariableService.getUsername())){
+			throw new RuntimeException("You don't have permission to access this resource.Please access your specific resource");
+		}
+
 		System.out.println("user"+user);
 		List<AddToFavourites> allFavoruiet = favouriteService.findAllByUserId(user);
 		return globalresponse.listFavouriteResponse(allFavoruiet);
@@ -77,7 +81,12 @@ public class FavouriteController {
 	@DeleteMapping(value="/favourite",params="favourite_id")
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<?> removeFromFavoureit(@RequestParam("favourite_id") int favourite_id){
-		
+
+//		User user = userService
+//		if(!user.getUserName().equals(globalVariableService.getUsername())){
+//			throw new RuntimeException("You don't have permission to access this resource.Please access your specific resource");
+//		}
+
 		favouriteService.deleteById(favourite_id);
 		return globalresponse.globalResponse("Success",HttpStatus.OK.value());
 	}

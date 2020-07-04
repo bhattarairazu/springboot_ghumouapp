@@ -1,18 +1,14 @@
 package com.acepirit.ghumou.main.GhumouMain.Entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 
 @Entity
@@ -51,7 +47,8 @@ public class Orderpackage {
 	
 	@Column(name="order_message")
 	private String orderMessage;
-	
+
+//	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@OneToOne
 	@JoinColumn(name="user_id",referencedColumnName = "id")
 	private User user;
@@ -85,7 +82,7 @@ public class Orderpackage {
 
 	@Column(name="total_amount")
 	private long totalAmount;
-	
+
 	public Orderpackage() {}
 
 

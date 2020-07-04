@@ -21,6 +21,8 @@
   <link rel="stylesheet" th:href="@{/admin/plugins/toastr/toastr.min.css}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <!-- khalti checkout-->
+  <script src="https://khalti.com/static/khalti-checkout.js"></script>
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -268,7 +270,28 @@ to get the desired effect
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a th:href="@{/admin_v1/ourservices}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                FrontPage
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right"></span>
 
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a th:href="@{/admin_v1/dynamicpages}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Dynamic Page
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right"></span>
+
+              </p>
+            </a>
+          </li>
 
 
         </ul>
@@ -307,8 +330,7 @@ to get the desired effect
             
                 </div>
                 <div class="col-sm-2">
-                    <a th:href="@{/admin/addpackage}"><button type="button" class="btn btn-block btn-primary btn-lg">Pay Via Stripe</button></a>
-                  <img src="kdkkdkd" width="3%" height="4%">
+                  <button id="payment-button">Pay with Khalti</button>
             
                 </div>
               </div>
@@ -433,7 +455,61 @@ to get the desired effect
     $('.toastrDefaultWarning').click(function() {
       toastr.warning('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
     });
- 
+
+    var config = {
+    // replace the publicKey with yours
+    "publicKey": "test_public_key_a3fd57e983a241dcaf363c599036741b",
+    "productIdentity": "1234567890",
+    "productName": "Dragon",
+    "productUrl": "http://gameofthrones.wikia.com/wiki/Dragons",
+    "eventHandler": {
+      onSuccess (payload) {
+        // hit merchant api for initiating verfication
+        console.log(payload);
+        console.log(payload.token);
+
+        console.log(payload.amount);
+        //posting data to server
+        var verify = {
+          token:payload.token,
+          amount:payload.amount
+        }
+        console.log(JSON.stringify(verify));
+        // $.ajax({
+        //   type:'POST',
+        //   url:'http://localhost:8888/api/v2/payment/khalti',
+        //   data:JSON.stringify(verify),
+        //   contentType:'application/json',
+        //   processData:false,
+        //   dataType:'jsonp',
+        //   headers:{
+        //     'Authorization':'Bearer '+'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MiIsImV4cCI6MTU4OTk5NjM1NCwiaWF0IjoxNTg5OTYwMzU0fQ.pyUK8AeMaGoiNDLNlDFkPY0PK5_e26kGKeZH-vq52Bc'
+        //   },
+        //   success:function(result){
+        //     console.log("success",result);
+        //   },
+        //   error:function (error) {
+        //     console.log("error",error);
+        //
+        //   }
+        // });
+
+      },
+      onError (error) {
+        console.log(error);
+      },
+      onClose () {
+        console.log('widget is closing');
+      }
+    }
+  };
+
+  var checkout = new KhaltiCheckout(config);
+  var btn = document.getElementById("payment-button");
+  btn.onclick = function () {
+    checkout.show({amount: 1000});
+  }
+<!-- Paste this code anywhere in you body tag -->
   
 </script>
 </body>

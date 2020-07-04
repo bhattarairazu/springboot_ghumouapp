@@ -36,21 +36,22 @@
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<exclusions>
-				<exclusion>
-				    <groupId>org.springframework.boot</groupId>
-				    <artifactId>spring-boot-starter-tomcat</artifactId>
-				</exclusion>
-			
-				<!-- <exclusion>
-				    <groupId>org.apache.tomcat.embed</groupId>
-				    <artifactId>tomcat-embed-el</artifactId>
-				</exclusion>  -->
-		</exclusions>
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--				    <groupId>org.springframework.boot</groupId>-->
+<!--				    <artifactId>spring-boot-starter-tomcat</artifactId>-->
+
+<!--				</exclusion>-->
+
+<!--				 <exclusion>-->
+<!--				    <groupId>org.apache.tomcat.embed</groupId>-->
+<!--				    <artifactId>tomcat-embed-el</artifactId>-->
+<!--				</exclusion>-->
+<!--		</exclusions>-->
 		</dependency>
 
 <!--		 <dependency>-->
@@ -59,7 +60,16 @@
 <!--			<scope>runtime</scope>-->
 <!--			<optional>true</optional>-->
 <!--		</dependency>-->
-		
+		<!-- Spring wecclient for consuming rest api-->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-webflux</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.projectreactor</groupId>
+				<artifactId>reactor-spring</artifactId>
+				<version>1.0.1.RELEASE</version>
+			</dependency>
 		<!-- for jwt -->
 			<dependency>
 				<groupId>io.jsonwebtoken</groupId>
@@ -97,7 +107,7 @@
 		    <dependency>
 	    	<groupId>org.springframework.boot</groupId>
 	    	<artifactId>spring-boot-starter-tomcat</artifactId>
-	    	<scope>provided</scope>
+<!--	    	<scope>provided</scope>-->
 	    </dependency>
 		<dependency>
 			<groupId>mysql</groupId>

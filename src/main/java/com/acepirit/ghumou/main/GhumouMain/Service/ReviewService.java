@@ -1,6 +1,7 @@
 package com.acepirit.ghumou.main.GhumouMain.Service;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.Review;
+import com.acepirit.ghumou.main.GhumouMain.Entity.User;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface ReviewService {
 
     Review findById(int id);
     void calculateAverageRating(int packageid);
+
+    List<Review> findByUser(User user);
 }

@@ -1,5 +1,6 @@
 package com.acepirit.ghumou.main.GhumouMain.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.*;
@@ -30,6 +31,9 @@ public class GlobalResponseService {
 		gr.setResults(obj);
 		return ResponseEntity.ok(gr);
 	}
+
+
+
 	//similar packages response
 	public ResponseEntity<SimilarPackagesResponse> similarResponse(Packagess packageDetail,List<Packagess> similarList){
 		SimilarPackagesResponse simiar = new SimilarPackagesResponse();
@@ -113,4 +117,70 @@ public class GlobalResponseService {
 			lr.setResults(objList);
 			return ResponseEntity.ok(lr);
 		}
+
+		//order iwht payment response
+		public ResponseEntity<OrderWithPaymentResponse> orderWithPaymet(Orderpackage obj,List<Payment> payments){
+			OrderWithPaymentResponse gr = new OrderWithPaymentResponse();
+			gr.setMsg("Success");
+			gr.setStatusCode(HttpStatus.CREATED.value());
+			gr.setTimestamp(System.currentTimeMillis());
+			gr.setResults(obj);
+			gr.setPayments(payments);
+			return ResponseEntity.ok(gr);
+		}
+
+
+
+		//our features list response
+		public ResponseEntity<ListDynamicPageResponse> listDynamicPages(List<DynamicPages> objList){
+			ListDynamicPageResponse lr = new ListDynamicPageResponse();
+			lr.setMsg("Success");
+			lr.setStatusCode(HttpStatus.CREATED.value());
+			lr.setTimestamp(System.currentTimeMillis());
+			lr.setResults(objList);
+			return ResponseEntity.ok(lr);
+		}
+
+		//our features list response
+		public ResponseEntity<ListServiceResponse> listOurServices(List<OurServices> objList){
+			ListServiceResponse lr = new ListServiceResponse();
+			lr.setMsg("Success");
+			lr.setStatusCode(HttpStatus.CREATED.value());
+			lr.setTimestamp(System.currentTimeMillis());
+			lr.setResults(objList);
+			return ResponseEntity.ok(lr);
+		}
+	//comparison list response
+	public ResponseEntity<ListComparisonResponse> listComparision(List<ComparisonPackage> objList){
+		ListComparisonResponse lr = new ListComparisonResponse();
+		lr.setMsg("Success");
+		lr.setStatusCode(HttpStatus.CREATED.value());
+		lr.setTimestamp(System.currentTimeMillis());
+		lr.setResults(objList);
+		return ResponseEntity.ok(lr);
+	}
+
+	//comparison list response
+	public ResponseEntity<ListSellarNameResponse> listnamesellar(List<String> objList){
+		ListSellarNameResponse lr = new ListSellarNameResponse();
+		lr.setMsg("Success");
+		lr.setStatusCode(HttpStatus.CREATED.value());
+		lr.setTimestamp(System.currentTimeMillis());
+		lr.setResults(objList);
+		return ResponseEntity.ok(lr);
+	}
+
+	//payment list response
+	public ResponseEntity<ListPaymentResponse> listPayment(List<Payment> objList){
+		ListPaymentResponse lr = new ListPaymentResponse();
+		lr.setMsg("Success");
+		lr.setStatusCode(HttpStatus.CREATED.value());
+		lr.setTimestamp(System.currentTimeMillis());
+		lr.setResults(objList);
+		return ResponseEntity.ok(lr);
+	}
+
+
+
+
 }

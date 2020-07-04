@@ -1,13 +1,8 @@
 package com.acepirit.ghumou.main.GhumouMain.Entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="payment")
@@ -25,8 +20,9 @@ public class Payment {
 	
 	@Column(name="discount_amount")
 	private long discountAmount;
-	
-	@OneToOne
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@ManyToOne
 	@JoinColumn(name="order_id",referencedColumnName = "id")
 	private Orderpackage order;
 	
@@ -38,6 +34,12 @@ public class Payment {
 	
 	@Column(name="invoice")
 	private String invoice;
+
+	@Column(name="payment_transcation_id")
+	private String transcationIdx;
+
+	@Column(name="payment_amount")
+	private double paymentAmount;
 	
 	public Payment() {};
 
@@ -123,10 +125,21 @@ public class Payment {
 	public void setInvoice(String invoice) {
 		this.invoice = invoice;
 	}
-	
-	
-	
-	
-	
 
+
+	public String getTranscationIdx() {
+		return transcationIdx;
+	}
+
+	public void setTranscationIdx(String transcationIdx) {
+		this.transcationIdx = transcationIdx;
+	}
+
+	public double getPaymentAmount() {
+		return paymentAmount;
+	}
+
+	public void setPaymentAmount(double paymentAmount) {
+		this.paymentAmount = paymentAmount;
+	}
 }

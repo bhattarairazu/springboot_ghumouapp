@@ -39,4 +39,6 @@ public interface UserService extends UserDetailsService {
 
 	public List<User> findAllByRole(String rolename);
 
+	User findByOrganizationName(String oname);
+
 }

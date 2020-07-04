@@ -44,8 +44,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter{
 				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.authorizeRequests().antMatchers("/api/v2/account/login","/api/v2/ghumoufiles/**","/swagger-ui.html").permitAll()
 			 .antMatchers("/api/v2/account/confirm-account/**").permitAll()
-			.anyRequest().authenticated()
-				//.anyRequest().permitAll()
+			//.anyRequest().authenticated()
+				.anyRequest().permitAll()
 			.and()
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

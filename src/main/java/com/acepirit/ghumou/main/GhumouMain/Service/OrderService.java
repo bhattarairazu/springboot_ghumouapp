@@ -23,6 +23,8 @@ public interface OrderService {
 	List<Orderpackage> findAll();
 
 	List<Orderpackage> findAllByPackagessPackageSellar(String sellar);
+
+	int lastInsertId();
 	
 	
 

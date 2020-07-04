@@ -1,5 +1,6 @@
 package com.acepirit.ghumou.main.GhumouMain.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private OrderRepository orderRepository;
-	
+
 	@Autowired 
 	private UserService userService;
 	
@@ -35,6 +36,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<Orderpackage> findAllByUser(User user) {
 		List<Orderpackage> allOrder = orderRepository.findAllByUser(user);
+
 		return allOrder;
 	}
 
@@ -44,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
 		orderpackage.setBookingAmount(order.getBookingAmount());
 		orderpackage.setRemainingAmount(order.getRemainingAmount());
 		orderpackage.setTotalPaidStatus(order.isTotalPaidStatus());
-		orderpackage.setOrderDate(order.getOrderDate());
+		orderpackage.setOrderDate(new Date(System.currentTimeMillis()));
 		orderpackage.setDepartureDate(order.getDepartureDate());
 		orderpackage.setOrderFrom(order.getOrderFrom());
 		orderpackage.setTotalPeople(order.getTotalPeople());
@@ -73,13 +75,13 @@ public class OrderServiceImpl implements OrderService {
 			orderpackage.setBookingAmount(order.getBookingAmount());
 			orderpackage.setRemainingAmount(order.getRemainingAmount());
 			orderpackage.setTotalPaidStatus(order.isTotalPaidStatus());
-			orderpackage.setOrderDate(order.getOrderDate());
+			orderpackage.setOrderDate(new Date(System.currentTimeMillis()));
 			orderpackage.setDepartureDate(order.getDepartureDate());
 			orderpackage.setOrderFrom(order.getOrderFrom());
 			orderpackage.setTotalPeople(order.getTotalPeople());
 			orderpackage.setOrderNotes(order.getOrderNotes());
 			orderpackage.setOrderMessage(order.getOrderMessage());
-			orderpackage.setOrderStatus(order.getOrderStatus());
+			orderpackage.setOrderStatus("PENDING");
 			orderpackage.setUser(userService.findById(order.getUserId()));
 			orderpackage.setPackages(packageService.findById(order.getPackageId()));
 			orderpackage.setName(order.getName());
@@ -128,6 +130,12 @@ public class OrderServiceImpl implements OrderService {
 	public List<Orderpackage> findAllByPackagessPackageSellar(String sellar) {
 		List<Orderpackage> allOrder = orderRepository.findAllByPackagessPackageSellar(sellar);
 		return allOrder;
+	}
+
+	@Override
+	public int lastInsertId() {
+		int id = orderRepository.lastInsertId();
+		return id;
 	}
 
 

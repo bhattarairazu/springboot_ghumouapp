@@ -11,6 +11,7 @@ import java.util.Map;
 import java.lang.reflect.Field;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.*;
+import com.acepirit.ghumou.main.GhumouMain.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.PathResource;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.acepirit.ghumou.main.GhumouMain.Service.FileUploadService;
-import com.acepirit.ghumou.main.GhumouMain.Service.GlobalResponseService;
-import com.acepirit.ghumou.main.GhumouMain.Service.PackageService;
 import com.google.common.net.HttpHeaders;
 
 @RestController
@@ -39,13 +37,28 @@ public class PackageController {
 	
 	@Autowired
 	private GlobalResponseService globalResponse;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private GlobalVariableService globalVariableService;
 	
 	//inserting package to the database
 	@PostMapping("/packages")
 	@PreAuthorize("hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> postPackage(@RequestPart("thumnail") MultipartFile thumnail,
 				@RequestPart("images") MultipartFile[] images,
-				@RequestPart("packages") Packagess packages) {
+				@RequestPart("packages") Packagess packages) throws Exception {
+		try{
+			if(!"APPROVED".matches(userService.findByOrganizationName(packages.getPackageSellar()).getUser_profile().getStatus())){
+				throw new Exception("You account is in verification Phase.Please wait until we verify your account.Account can be verified within 24 hour");
+			}
+
+		}catch(NullPointerException e){
+			System.out.println("Null pointer exception "+e);
+		}
+
 		String thumnailPath=null;
 		if(thumnail!=null) {
 			try {
@@ -92,6 +105,12 @@ public class PackageController {
 	@DeleteMapping(value="/packages/delete/{id}")
 	@PreAuthorize("hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> deletePackage(@PathVariable int id){
+		Packagess packagess = packageService.findById(id);
+		User user = userService.findByOrganizationName(packagess.getPackageSellar());
+		if(!user.getUserName().equals(globalVariableService.getUsername())){
+			throw new RuntimeException("You don't have permission to access this resource.Please access your specific resource");
+		}
+
 		packageService.deleteById(id);
 		return globalResponse.globalResponse("success",HttpStatus.OK.value());
 	}
@@ -99,6 +118,10 @@ public class PackageController {
 	@PreAuthorize("hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> updatePackage(@RequestPart("updatePackage") Map<String,String> updatePackage,@PathVariable int id,@RequestPart("thumnail") MultipartFile thumnail,@RequestPart("images") MultipartFile[] images){
 		Packagess packages = packageService.findById(id);
+		User user = userService.findByOrganizationName(packages.getPackageSellar());
+		if(!user.getUserName().equals(globalVariableService.getUsername())){
+			throw new RuntimeException("You don't have permission to access this resource.Please access your specific resource");
+		}
 
 		String thumnailPath=null;
 		if(!thumnail.isEmpty()) {
@@ -185,7 +208,7 @@ public class PackageController {
 		@GetMapping("/ghumoufiles/{fileName:.*}")
 		public ResponseEntity<PathResource> downloadFile(@PathVariable String fileName){
 			
-			String uploadDirectoryfilesystem ="/home/acepirit/ghumoufiles/";
+			String uploadDirectoryfilesystem ="/home/ghumou/ghumoufiles/";
 			Path fileNamePath = Paths.get(uploadDirectoryfilesystem,fileName);
 			System.out.println("filename "+fileName);
 			return ResponseEntity.ok()
@@ -254,7 +277,7 @@ public class PackageController {
 
 
 
-	@GetMapping(value="/packages",params= {"ordering","ordertype"})
+	    @GetMapping(value="/packages",params= {"ordering","ordertype"})
 		@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_SELLAR') or hasRole('ROLE_ADMIN')")
 		public ResponseEntity<?> listPackageByViews(@RequestParam("ordering") String ordering,@RequestParam("ordertype") String ordertype){
 			List<Packagess> allPackages = null;

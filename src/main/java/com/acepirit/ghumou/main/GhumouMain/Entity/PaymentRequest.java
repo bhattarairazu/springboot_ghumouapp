@@ -16,6 +16,10 @@ public class PaymentRequest {
 	private String paymentType;
 	
 	private String invoice;
+
+	private String token;
+
+	private double paymentAmount;
 	
 	public PaymentRequest() {}
 
@@ -82,6 +86,20 @@ public class PaymentRequest {
 	public void setDiscountAmount(long discountAmount) {
 		this.discountAmount = discountAmount;
 	}
-	
-	
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public double getPaymentAmount() {
+		return paymentAmount;
+	}
+
+	public void setPaymentAmount(double paymentAmount) {
+		this.paymentAmount = paymentAmount;
+	}
 }

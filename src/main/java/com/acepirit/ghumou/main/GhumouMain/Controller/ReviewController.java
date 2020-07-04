@@ -4,10 +4,7 @@ import com.acepirit.ghumou.main.GhumouMain.Entity.Review;
 import com.acepirit.ghumou.main.GhumouMain.Entity.ReviewGet;
 import com.acepirit.ghumou.main.GhumouMain.Entity.User;
 import com.acepirit.ghumou.main.GhumouMain.Response.GlobalResponse;
-import com.acepirit.ghumou.main.GhumouMain.Service.GlobalResponseService;
-import com.acepirit.ghumou.main.GhumouMain.Service.PackageService;
-import com.acepirit.ghumou.main.GhumouMain.Service.ReviewService;
-import com.acepirit.ghumou.main.GhumouMain.Service.UserService;
+import com.acepirit.ghumou.main.GhumouMain.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +29,9 @@ public class ReviewController {
 
     @Autowired
     private GlobalResponseService globalResponse;
+
+    @Autowired
+    private GlobalVariableService globalVariableService;
 
     @PostMapping("/addreview")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -66,6 +66,12 @@ public class ReviewController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> editReview(@PathVariable int id,@RequestBody ReviewGet review){
         Review singlereview = reviewService.findById(id);
+        String user = singlereview.getUser().getUserName();
+        if(!user.equals(globalVariableService.getUsername())){
+            throw new RuntimeException("You don't have permission to access this resource.Please access your specific resource");
+        }
+
+
         singlereview.setUser(userService.findById(review.getUserId()));
         singlereview.setPackageId(review.getPackageId());
         singlereview.setRating(review.getRating());
@@ -77,11 +83,26 @@ public class ReviewController {
         return globalResponse.responseClient(singlereview);
     }
 
-    @DeleteMapping("/reviews/{id}")
+    @DeleteMapping("/reviews/{id}/{packageid}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> deleteReview(@PathVariable int id){
+    public ResponseEntity<?> deleteReview(@PathVariable int id,@PathVariable int packageid){
+        Review review = reviewService.findById(id);
+        if(!review.getUser().getUserName().equals(globalVariableService.getUsername())){
+            throw new RuntimeException("You don't have permission to access this resource.Please access your specific resource");
+        }
+
         reviewService.deleteById(id);
+        //calculating avg rating
+        reviewService.calculateAverageRating(packageid);
+
         return globalResponse.globalResponse("Success", HttpStatus.OK.value());
+    }
+    //gettig reviews by userid
+    @GetMapping("/reviews/user/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<?> getReviewByUserid(@PathVariable int id){
+        List<Review> reviews = reviewService.findByUser(userService.findById(id));
+        return globalResponse.listReview(reviews);
     }
 
 }

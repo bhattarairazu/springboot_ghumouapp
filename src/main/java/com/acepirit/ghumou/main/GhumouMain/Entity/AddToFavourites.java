@@ -1,12 +1,6 @@
 package com.acepirit.ghumou.main.GhumouMain.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="addto_favourite")
@@ -19,7 +13,7 @@ public class AddToFavourites {
 	@JoinColumn(name="user_id",referencedColumnName = "id")
 	private User userId;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="package_id",referencedColumnName = "package_id")
 	private Packagess packageId;
 	

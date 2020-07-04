@@ -4,13 +4,14 @@ import java.util.List;
 
 import com.acepirit.ghumou.main.GhumouMain.Entity.AddToFavourites;
 import com.acepirit.ghumou.main.GhumouMain.Entity.Orderpackage;
+import com.acepirit.ghumou.main.GhumouMain.Entity.Payment;
 
 public class ListOrderResponse {
 	private String msg;
 	private int statusCode;
 	private long timestamp;
 	private List<Orderpackage> results;
-	
+
 	public ListOrderResponse() {}
 	public String getMsg() {
 		return msg;
@@ -36,6 +37,5 @@ public class ListOrderResponse {
 	public void setResults(List<Orderpackage> results) {
 		this.results = results;
 	}
-	
-	
+
 }

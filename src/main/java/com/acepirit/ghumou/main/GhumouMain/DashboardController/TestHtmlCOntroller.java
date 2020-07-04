@@ -39,6 +39,10 @@ public class TestHtmlCOntroller {
 	FileUploadService fileUploadService;
 	@Autowired
 	OrderService orderService;
+	@Autowired
+	private DynamicPageService dynamicPageService;
+	@Autowired
+	OurServicesService ourServices;
 
 	@GetMapping("/addpackage")
 	public String addpackage(Model newModel) {
@@ -256,33 +260,46 @@ public class TestHtmlCOntroller {
 		pack.setIcons(packages.getIcons());
 		System.out.println("icons values "+packages.getIcons());
 		String thumnailPath=null;
-		if(packages.getThumnail()!=null) {
+		if(packages.getId()==0 && !packages.getThumnail().isEmpty()) {
 			try {
 				thumnailPath = fileUploadService.storeFile(packages.getThumnail());
 				pack.setThumnail(thumnailPath);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}else {
+		}else if(packages.getId()==0 && packages.getThumnail().isEmpty()){
 			return "redirect:addpackages";
+		}else if(packages.getId()!=0 && !packages.getThumnail().isEmpty()){
+			try {
+				thumnailPath = fileUploadService.storeFile(packages.getThumnail());
+				pack.setThumnail(thumnailPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 //checking list of images for null value
 		List<Images> imagesPath = new ArrayList<>();
-		if(packages.getImages()!=null) {
+		if((packages.getImages().length>0 && packages.getId()==0) || (packages.getImages().length>0 && packages.getId()!=0)) {
 
 			for(MultipartFile file:packages.getImages()) {
-				Images image = new Images();
-				try {
-					image.setImage(fileUploadService.storeFile(file));
-				} catch (IOException e) {
 
-					e.printStackTrace();
+				if (!file.isEmpty()) {
+					Images image = new Images();
+					try {
+						image.setImage(fileUploadService.storeFile(file));
+					} catch (IOException e) {
+
+						e.printStackTrace();
+					}
+					//imagesPath.add(fileUploadService.storeFile(file));
+					imagesPath.add(image);
 				}
-				//imagesPath.add(fileUploadService.storeFile(file));
-				imagesPath.add(image);
 			}
-			pack.setImages(imagesPath);
-		}else {
+			if(imagesPath.size()>0) {
+				pack.setImages(imagesPath);
+			}
+
+		}else if(packages.getImages().length==0 && packages.getId()==0){
 			return "redirect:addpackages";
 		}
 		System.out.println("Packages "+pack);
@@ -316,5 +333,101 @@ public class TestHtmlCOntroller {
 			return "redirect:logins";
 		}
 	}
+
+	//services
+	@GetMapping("/ourservices")
+	public String ourService(Model theModel){
+		//for adding new services
+		FormGetOurServices ourservices = new FormGetOurServices();
+		//for listing all services
+		List<OurServices> allServices = ourServices.findAll();
+		theModel.addAttribute("services",allServices);
+		theModel.addAttribute("ourservices",ourservices);
+		return "services";
+	}
+
+
+	@PostMapping("/addservices")
+	public String addServices(@ModelAttribute("ourservices") FormGetOurServices ourservices,Model theModel){
+		System.out.println(ourservices.getFile());
+		String imagepath = null;
+		if(!ourservices.getFile().isEmpty()){
+			try {
+				imagepath = fileUploadService.storeFile(ourservices.getFile());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		OurServices service = new OurServices();
+
+		service.setImage(imagepath);
+		service.setName(ourservices.getName());
+		service.setDescription(ourservices.getDescription());
+		service.setType(ourservices.getType());
+		ourServices.save(service);
+		System.out.println("iamge "+ourservices.getFile()+" des"+ourservices.getDescription());
+
+		return "redirect:ourservices";
+	}
+
+	@GetMapping("/ourservices/{id}")
+	public String deleteService(@PathVariable int id){
+		ourServices.deleteById(id);
+		return "redirect:../ourservices";
+	}
+	@GetMapping("/user/profile/{id}/{type}")
+	public String changeSellar(@PathVariable int id,@PathVariable String type){
+		User user = userService.findById(id);
+		user.getUser_profile().setStatus(type);
+		userService.save(user);
+		return "redirect:../../../travelpartner";
+	}
+	/**
+	*Dynamic pages controller section
+	*/
+	@GetMapping("/dynamicpages")
+	public String listPages(Model theModel){
+		List<DynamicPages> allPages = dynamicPageService.findAll();
+		theModel.addAttribute("dynamicpages",allPages);
+		return "dynamicpages";
+	}
+
+	@GetMapping("/addpages")
+	public String addPages(Model theModel){
+		DynamicPages newPage = new DynamicPages();
+		theModel.addAttribute("dynamicpage",newPage);
+		return "addpages";
+	}
+
+	@PostMapping("/uploadpages")
+	public String uploadPages(@ModelAttribute("dynamicpage") DynamicPages dynamicpage,Model theModel){
+		if(dynamicpage.getId()>0){
+			System.out.println("this is edit button");
+		}else{
+			System.out.println("this is new button");
+
+		}
+		dynamicpage.setCreatedAt(new Date(System.currentTimeMillis()));
+		dynamicPageService.save(dynamicpage);
+		return "redirect:dynamicpages";
+	}
+
+	@GetMapping("/editpage/{id}")
+	public String ediPage(@PathVariable int id,Model theModel){
+		DynamicPages page = dynamicPageService.findById(id);
+		theModel.addAttribute("dynamicpage",page);
+		return "addpages";
+
+	}
+
+	@GetMapping("/deletepage/{id}")
+	public String deletePage(@PathVariable int id){
+		dynamicPageService.deleteById(id);
+		return "redirect:../dynamicpages";
+	}
+
+
+
+
 
 }

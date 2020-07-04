@@ -1,5 +1,7 @@
 package com.acepirit.ghumou.main.GhumouMain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
@@ -29,12 +31,14 @@ public class User {
 	@Column(name="email")
 	private String email;
 	
-	@Column(name="is_enabled")
-	private boolean isEnabled = false;
-	
+	@Column(name="is_enabled",columnDefinition = "boolean default false")
+	private boolean isEnabled ;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name="password")
 	private String password;
 
+	@Column(name="is_login",columnDefinition = "boolean default false")
+	private boolean isLogin;
 
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -128,5 +132,13 @@ public class User {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public boolean isLogin() {
+		return isLogin;
+	}
+
+	public void setLogin(boolean login) {
+		isLogin = login;
 	}
 }

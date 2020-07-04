@@ -18,7 +18,7 @@ public class FileConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").
-        allowedMethods("GET", "POST", "PUT", "DELETE","PATCH").allowedOrigins("http://localhost:3000")
+        allowedMethods("GET", "POST", "PUT", "DELETE","PATCH").allowedOrigins("http://localhost:3000","https://ghumou.com","https://www.ghumou.com")
         .allowedHeaders("*");
 //
 //

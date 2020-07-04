@@ -215,6 +215,10 @@ public class UserServiceImpl implements UserService {
 		}
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userlogin.getUsername(), userlogin.getPassword()));
+			//setting user login to true
+			User user = findByUserName(userlogin.getUsername());
+			user.setLogin(true);
+			save(user);
 
 		} catch (BadCredentialsException ex) {
 			if(method.matches("API")) {
@@ -236,4 +240,14 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userRepository.findAllByRoles(role);
 		return users;
 	}
+
+	@Override
+	public User findByOrganizationName(String oname) {
+		User user = userRepository.findByOrganizationName(oname);
+		return user;
+	}
+	//find by organization name
+
+
+
 }
